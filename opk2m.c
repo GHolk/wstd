@@ -6,8 +6,25 @@
 #define PHI 1
 #define KAPA 2
 
+#define M_OMEGA(omega) { \
+    {1, 0, 0}, \
+    {0, cos(omega), sin(omega)}, \
+    {0, -sin(omega), cos(omega)} \
+}
+
+#define M_PHI(phi) { \
+    {cos(phi), 0, -sin(phi)}, \
+    {0, 1, 0}, \
+    {sin(phi), 0, cos(phi)} \
+}
+
+#define M_KAPA(kapa) { \
+    {cos(degree[KAPA]), sin(degree[KAPA]), 0}, \
+    {-sin(degree[KAPA]), cos(degree[KAPA]), 0}, \
+    {0, 0, 1} \
+}
+
 typedef double Matrix3[3][3];
-typedef double Vector3[3];
 
 void multiply_matrix (Matrix3 m1, Matrix3 m2, Matrix3 answer) {
     for (int i=0; i<3; i++) {
@@ -41,21 +58,9 @@ int main(int argc, char* argv[]) {
     }
 
     Matrix3 m[] = {
-        { // M(omega)
-            {1, 0, 0},
-            {0, cos(degree[OMEGA]), sin(degree[OMEGA])},
-            {0, -sin(degree[OMEGA]), cos(degree[OMEGA])}
-        },
-        { // M(phi)
-            {cos(degree[PHI]), 0, -sin(degree[PHI])},
-            {0, 1, 0},
-            {sin(degree[PHI]), 0, cos(degree[PHI])}
-        },
-        { // M(kapa)
-            {cos(degree[KAPA]), sin(degree[KAPA]), 0},
-            {-sin(degree[KAPA]), cos(degree[KAPA]), 0},
-            {0, 0, 1}
-        }
+        M_OMEGA(degree[OMEGA]),
+        M_PHI(degree[PHI]),
+        M_KAPA(degree[KAPA])
     };
 
     puts("M(omega) = ");
@@ -73,6 +78,7 @@ int main(int argc, char* argv[]) {
     multiply_matrix(m[KAPA], m[PHI], answer[0]);
     multiply_matrix(answer[0], m[OMEGA], answer[1]);
     print_matrix(answer[1]);
+
     return 0;
 }
 
