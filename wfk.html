@@ -17,6 +17,11 @@ table {
 </head>
 <body>
 
+    <table>
+        <tr><td>a <td>b
+        <tr><td>c <td>d
+        <caption>test</caption>
+    </table>
 
 <form>
 <textarea>
@@ -26,10 +31,16 @@ table {
 </form>
 
 <script>
+(function(){
 var board = document.getElementsByTagName('output')[0]
 
 rotateWFK.Matrix3.prototype.toNode = function() {
-    var table = this.reduce(function(table, row) {
+    var table = document.createElement('table')
+    var caption = document.createElement('caption')
+    caption.textContent = this.name + '\n'
+    table.appendChild(caption)
+
+    this.reduce(function(table, row) {
         var tr = row.reduce(function(tr, cell) {
             var td = document.createElement('td')
             td.textContent = cell
@@ -38,9 +49,8 @@ rotateWFK.Matrix3.prototype.toNode = function() {
         }, document.createElement('tr'))
         table.appendChild(tr)
         return table
-    }, document.createElement('table'))
-    var caption = document.createElement('caption')
-    table.appendChild(caption)
+    }, table)
+
     return table
 }
 
@@ -92,6 +102,7 @@ function showMatrix(matrix) {
 }
 
 function parseTextAndComputeMatrix(text) {
+    board.textContent = ''
     parseEoioText(text)
         .map(computeRotateMatrix)
         .forEach(showMatrix)
@@ -108,7 +119,7 @@ document.getElementsByTagName('input')[0].addEventListener('change', function(ev
     }
     reader.readAsText(this.files[0])
 })
-
+}())
 </script>
 </body>
 </html>
