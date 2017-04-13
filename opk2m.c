@@ -63,6 +63,7 @@ int main(int argc, char* argv[]) {
         M_KAPA(degree[KAPA])
     };
 
+#ifdef DEBUG
     puts("M(omega) = ");
     print_matrix(m[OMEGA]);
 
@@ -71,6 +72,7 @@ int main(int argc, char* argv[]) {
 
     puts("M(kapa) = ");
     print_matrix(m[KAPA]);
+#endif
 
     Matrix3 answer[2];
 

@@ -1,0 +1,3 @@
+
+whenTextReady = (text) ->
+
