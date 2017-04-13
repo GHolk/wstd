@@ -1,3 +1,0 @@
-
-whenTextReady = (text) ->
-

@@ -37,32 +37,37 @@ sin = Math.sin
 cos = Math.cos
 
 rotateMatrix =
-    omega: (o) -> new Matrix3 [
+    omega: (w) -> new Matrix3 [
         [1, 0, 0]
-        [0, cos(o), sin(o)]
-        [0, -sin(o), cos(o)]
+        [0, cos(w), sin(w)]
+        [0, -sin(w), cos(w)]
     ]
-
     phi: (f) -> new Matrix3 [
         [cos(f), 0, -sin(f)]
         [0, 1, 0]
         [sin(f), 0, cos(f)]
     ]
-
     kappa: (k) -> new Matrix3 [
         [cos(k), sin(k), 0]
         [-sin(k), cos(k), 0]
         [0, 0, 1]
     ]
 
-rotateOFK = (o, f, k) ->
+rotateWFKMatrix = (w, f, k) ->
     rotateMatrix.kappa k
         .multiply rotateMatrix.phi f
-        .multiply rotateMatrix.omega o
+        .multiply rotateMatrix.omega w
 
-if exports?
-    exports.Matrix3 = Matrix3
-    exports.rotateMatrix = rotateMatrix
-    exports.rotateOFK = rotateOFK
+if  typeof exports == 'object'
+    md = exports
+else if typeof window == 'object'
+    window.rotateWFK = {}
+    md = window.rotateWFK
+else
+    md = {}
+
+md.Matrix3 = Matrix3
+md.rotateMatrix = rotateMatrix
+md.rotateWFKMatrix = rotateWFKMatrix
 
 

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="wfk.js"></script>
+    <meta charset="UTF-8">
+<style>
+td {
+    padding: 0.1em 0.3em;
+}
+table {
+    border-left: solid 1px;
+    border-right: solid 1px;
+    border-radius: 0.5em;
+    margin: 1em 0.8em;
+}
+</style>
+</head>
+<body>
+
+
+<form>
+<textarea>
+</textarea>
+<input type="file">
+<output></output>
+</form>
+
+<script>
+var board = document.getElementsByTagName('output')[0]
+
+rotateWFK.Matrix3.prototype.toNode = function() {
+    var table = this.reduce(function(table, row) {
+        var tr = row.reduce(function(tr, cell) {
+            var td = document.createElement('td')
+            td.textContent = cell
+            tr.appendChild(td)
+            return tr
+        }, document.createElement('tr'))
+        table.appendChild(tr)
+        return table
+    }, document.createElement('table'))
+    var caption = document.createElement('caption')
+    table.appendChild(caption)
+    return table
+}
+
+function parseEoioText(text) {
+    text = text.replace(/\r/g,'')
+
+    function truncatText(text) {
+        var i = text.match(/omega\s*phi\s*kappa/i)
+        if (i) text = text.slice(i.index)
+        var j = text.indexOf('\n\n')
+        if (j != -1) text = text.slice(0,j)
+        j = text.indexOf('\n')
+        text = text.slice(j+1)
+        return text
+    }
+
+    function parseToLines(text) {
+        var wfkLines = text.split(/\n/g).map(function(line) {
+            return line.split(/\s+/g)
+        })
+        return wfkLines.map(function(line) {
+            /* input line end with name, omega, phi, kappa;
+             * count from back.
+             */
+            var a = []
+                for (var i=0; i<3; i++) {
+                a.unshift(Number(line.pop()))
+            }
+            a.unshift(line.pop())
+            return a
+        })
+    }
+
+    var wfkLines = parseToLines(truncatText(text))
+    window.wfkLines = wfkLines
+    return wfkLines
+}
+
+function computeRotateMatrix(wfkLine) {
+    wfk = wfkLine.slice(1)
+    m = rotateWFK.rotateWFKMatrix.apply(this, wfk)
+    m.name = wfkLine[0]
+    m.wfk = wfk
+    return m
+}
+
+function showMatrix(matrix) {
+    board.appendChild(matrix.toNode())
+}
+
+function parseTextAndComputeMatrix(text) {
+    parseEoioText(text)
+        .map(computeRotateMatrix)
+        .forEach(showMatrix)
+}
+
+document.getElementsByTagName('textarea')[0].addEventListener('change', function() {
+    parseTextAndComputeMatrix(this.value)
+})
+
+document.getElementsByTagName('input')[0].addEventListener('change', function(evt) {
+    var reader = new FileReader()
+    reader.onload = function(evt) {
+        parseTextAndComputeMatrix(evt.target.result)
+    }
+    reader.readAsText(this.files[0])
+})
+
+</script>
+</body>
+</html>
