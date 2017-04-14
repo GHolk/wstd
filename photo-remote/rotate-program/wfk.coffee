@@ -19,17 +19,6 @@ class Matrix3
         []
     )
     size: [3,3]
-    multiply: (m) ->
-        @map (v,i,a) ->
-            sum = 0
-            sum += a[i[0]][k] * m[k][i[1]] for k in [0..2]
-            return sum
-
-    add: (m) -> @map (v,i) -> v + m[i[0]][i[1]]
-
-    slice: (start, end) ->
-        (this.reduce ((s,v) -> s.push v), []).slice start, end
-
     forEach: (callback) ->
         for i in [0..2]
             for j in [0..2]
@@ -44,6 +33,18 @@ class Matrix3
     reduce: (callback, sum) ->
         this.forEach (v,i,a) -> sum = callback sum, v, i, a
         return sum
+
+    multiply: (m) ->
+        @map (v,i,a) ->
+            a[i[0]].reduce(
+                (s,v,j) -> s + v*m[j][i[1]]
+                0
+            )
+
+    add: (m) -> @map (v,i) -> v + m[i[0]][i[1]]
+
+    slice: (start, end) ->
+        (this.reduce ((s,v) -> s.push v), []).slice start, end
 
 
 sin = Math.sin

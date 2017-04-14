@@ -37,29 +37,6 @@
 
     Matrix3.prototype.size = [3, 3];
 
-    Matrix3.prototype.multiply = function(m) {
-      return this.map(function(v, i, a) {
-        var k, l, sum;
-        sum = 0;
-        for (k = l = 0; l <= 2; k = ++l) {
-          sum += a[i[0]][k] * m[k][i[1]];
-        }
-        return sum;
-      });
-    };
-
-    Matrix3.prototype.add = function(m) {
-      return this.map(function(v, i) {
-        return v + m[i[0]][i[1]];
-      });
-    };
-
-    Matrix3.prototype.slice = function(start, end) {
-      return (this.reduce((function(s, v) {
-        return s.push(v);
-      }), [])).slice(start, end);
-    };
-
     Matrix3.prototype.forEach = function(callback) {
       var i, j, l, o;
       for (i = l = 0; l <= 2; i = ++l) {
@@ -84,6 +61,26 @@
         return sum = callback(sum, v, i, a);
       });
       return sum;
+    };
+
+    Matrix3.prototype.multiply = function(m) {
+      return this.map(function(v, i, a) {
+        return a[i[0]].reduce(function(s, v, j) {
+          return s + v * m[j][i[1]];
+        }, 0);
+      });
+    };
+
+    Matrix3.prototype.add = function(m) {
+      return this.map(function(v, i) {
+        return v + m[i[0]][i[1]];
+      });
+    };
+
+    Matrix3.prototype.slice = function(start, end) {
+      return (this.reduce((function(s, v) {
+        return s.push(v);
+      }), [])).slice(start, end);
     };
 
     return Matrix3;
