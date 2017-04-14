@@ -14,19 +14,37 @@ table {
     margin: 1em 0.8em;
 }
 form {
-    position: fixed;
-    right: 0;
-    bottom: 0;
+    float: right;
 }
 textarea {
     display: block;
     height: 30em;
     width: 30em;
 }
+math {
+    margin: 0;
+    width: 50%;
+}
+output {
+    display: block;
+    border: 1px solid;
+    margin: 1em;
+}
+output:empty:before {
+    content: 'no data';
+}
 </style>
 <title> 旋轉矩陣計算 </title>
 </head>
 <body>
+
+<form>
+<textarea placeholder="name &omega; &phi; &kappa;">
+</textarea>
+<input type="file">
+</form>
+
+<h1>旋轉矩陣計算</h1>
 
 <p>
 可以手動輸入或剪下貼上矩陣，
@@ -41,16 +59,24 @@ textarea {
 </pre>
 
 <p>
-或直接由左下方選取 australis 輸出的 
-<code>*_EOIO.txt</code> 。
+或直接由左下方上傳相機濾定軟體 australis 所輸出的 
+<code>*_EOIO.txt</code> 檔。
+（不會真得上傳，只會在本地用 js 解析。）
 </p>
 
-<form>
-<textarea placeholder="name &omega; &phi; &kappa;">
-</textarea>
-<input type="file">
-</form>
+<h2>公式</h2>
 
+
+<math><mrow><mi>M</mi><mo>(</mo><mo>&omega;</mo><mo>,</mo><mo>&phi;</mo><mo>,</mo><mo>&kappa;</mo><mo>)</mo><mo>&equals;</mo><mi>M</mi><mo>(</mo><mo>&kappa;</mo><mo>)</mo><mo>&times;</mo><mi>M</mi><mo>(</mo><mo>&phi;</mo><mo>)</mo><mo>&times;</mo><mi>M</mi><mo>(</mo><mo>&omega;</mo><mo>)</mo></mrow></math>
+;
+<br>
+<math><mrow><mi>M</mi><mo>(</mo><mo>&omega;</mo><mo>)</mo><mo>&equals;</mo><mrow><mo>[</mo><mtable><mtr><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd></mtr><mtr><mtd><mn>0</mn></mtd><mtd><mrow><mi>c</mi><mi>o</mi><mi>s</mi><mo>(</mo><mo>&omega;</mo><mo>)</mo></mrow></mtd><mtd><mrow><mi>s</mi><mi>i</mi><mi>n</mi><mo>(</mo><mo>&omega;</mo><mo>)</mo></mrow></mtd></mtr><mtr><mtd><mn>0</mn></mtd><mtd><mrow><mo>&minus;</mo><mi>s</mi><mi>i</mi><mi>n</mi><mo>(</mo><mo>&omega;</mo><mo>)</mo></mrow></mtd><mtd><mrow><mi>c</mi><mi>o</mi><mi>s</mi><mo>(</mo><mo>&omega;</mo><mo>)</mo></mrow></mtd></mtr></mtable><mo>]</mo></mrow></mrow></math>
+;
+<math><mrow><mi>M</mi><mo>(</mo><mo>&phi;</mo><mo>)</mo><mo>&equals;</mo><mrow><mo>[</mo><mtable><mtr><mtd><mrow><mi>c</mi><mi>o</mi><mi>s</mi><mo>(</mo><mo>&phi;</mo><mo>)</mo></mrow></mtd><mtd><mn>0</mn></mtd><mtd><mrow><mo>&minus;</mo><mi>s</mi><mi>i</mi><mi>n</mi><mo>(</mo><mi>&phi;</mi><mo>)</mo></mrow></mtd></mtr><mtr><mtd><mn>0</mn></mtd><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd></mtr><mtr><mtd><mrow><mi>s</mi><mi>i</mi><mi>n</mi><mo>(</mo><mo>&phi;</mo><mo>)</mo></mrow></mtd><mtd><mn>0</mn></mtd><mtd><mrow><mi>c</mi><mi>o</mi><mi>s</mi><mo>(</mo><mi>&phi;</mi><mo>)</mo></mrow></mtd></mtr></mtable><mo>]</mo></mrow></mrow></math>
+;
+<math><mrow><mi>M</mi><mo>(</mo><mo>&kappa;</mo><mo>)</mo><mo>&equals;</mo><mrow><mo>[</mo><mtable><mtr><mtd><mrow><mi>c</mi><mi>o</mi><mi>s</mi><mo>(</mo><mo>&kappa;</mo><mo>)</mo></mrow></mtd><mtd><mrow><mi>s</mi><mi>i</mi><mi>n</mi><mo>(</mo><mo>&kappa;</mo><mo>)</mo></mrow></mtd><mtd><mn>0</mn></mtd></mtr><mtr><mtd><mrow><mo>&minus;</mo><mi>s</mi><mi>i</mi><mi>n</mi><mo>(</mo><mo>&kappa;</mo><mo>)</mo></mrow></mtd><mtd><mrow><mi>c</mi><mi>o</mi><mi>s</mi><mo>(</mo><mo>&kappa;</mo><mo>)</mo></mrow></mtd><mtd><mn>0</mn></mtd></mtr><mtr><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>1</mn></mtd></mtr></mtable><mo>]</mo></mrow></mrow></math>
+
+<h2>旋轉矩陣</h2>
 <output></output>
 
 <script>
@@ -90,7 +116,7 @@ function parseEoioText(text) {
 
     function parseToLines(text) {
         var wfkLines = text.split(/\n/g).map(function(line) {
-            return line.split(/\s+/g)
+            return line.trim().split(/\s+/g)
         })
         return wfkLines.map(function(line) {
             /* input line end with name, omega, phi, kappa;
@@ -140,6 +166,8 @@ document.getElementsByTagName('input')[0].addEventListener('change', function(ev
     }
     reader.readAsText(this.files[0])
 })
+
+parseTextAndComputeMatrix(document.getElementsByTagName('textarea')[0].value)
 }())
 </script>
 </body>
