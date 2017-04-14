@@ -63,18 +63,18 @@ rotateWFK.Matrix3.prototype.toNode = function() {
     caption.textContent = this.name + '\n'
     table.appendChild(caption)
 
-    this.reduce(function(table, row) {
-        var tr = row.reduce(function(tr, cell) {
-            var td = document.createElement('td')
-            td.textContent = cell
-            tr.appendChild(td)
-            return tr
-        }, document.createElement('tr'))
-        table.appendChild(tr)
+    var rows = this.reduce(function(rows, cell, i) {
+        if (i[1] == 0) rows.push(document.createElement('tr'))
+        var td = document.createElement('td')
+        td.textContent = cell
+        rows[rows.length-1].appendChild(td)
+        return rows
+    }, [])
+
+    return rows.reduce(function(table, row) {
+        table.appendChild(row)
         return table
     }, table)
-
-    return table
 }
 
 function parseEoioText(text) {
