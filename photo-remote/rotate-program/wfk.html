@@ -1,8 +1,20 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-TW" prefix="og: http://ogp.me/ns#">
 <head>
-    <meta charset="UTF-8">
-    <script src="wfk.js"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="UTF-8">
+<meta name="author" property="og:article:author" content="c34031328">
+<meta name="copyright" content="Common Creative, by c34031328">
+<meta name="generator" content="vim, markdown">
+<!-- 以上一般不用改，以下才要改。 -->
+
+<!-- 後設資料 -->
+<meta name="date" property="og:article:public_time" content="2017-04-14">
+<meta name="keywords" property="og:article:tag" content="js,coffee-script,homework,program,computer">
+<link rel="index" type="text/html" href="index.html" title="首頁">
+
+<!-- 和網頁位置有關 -->
+<link rel="stylesheet" type="text/css" href="../../ext/word.css">
 <style>
 td {
     padding: 0.1em 0.3em;
@@ -10,8 +22,13 @@ td {
 table {
     border-left: solid 1px;
     border-right: solid 1px;
+    border-top: none;
+    border-bottom: none;
     border-radius: 0.5em;
     margin: 1em 0.8em;
+}
+td {
+    border: none;
 }
 form {
     float: right;
@@ -20,10 +37,6 @@ textarea {
     display: block;
     height: 30em;
     width: 30em;
-}
-math {
-    margin: 0;
-    width: 50%;
 }
 output {
     display: block;
@@ -35,6 +48,7 @@ output:empty:before {
 }
 </style>
 <title> 旋轉矩陣計算 </title>
+<script src="wfk.js"></script>
 </head>
 <body>
 
@@ -170,5 +184,7 @@ document.getElementsByTagName('input')[0].addEventListener('change', function(ev
 parseTextAndComputeMatrix(document.getElementsByTagName('textarea')[0].value)
 }())
 </script>
+
+<script src="../../ext/luser-meta.js" defer></script>
 </body>
 </html>
