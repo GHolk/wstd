@@ -1,37 +1,50 @@
 
-class Matrix3 extends Array
-    constructor: (a) ->
+class Matrix3
+    constructor: (a = 0) ->
         a = [1..9].map( -> a ) if typeof a == 'number'
 
         if a.length >= 9
-            a = [
-                a.slice 0,3
-                a.slice 3,6
-                a.slice 6,9
-            ]
-            a.unshift 0,1
-            this.splice.apply this, a
+            for i in [0..2]
+                this[i] = a.slice i*3,(i+1)*3
         else if a.length >= 3
-            a.unshift 0,0
-            this.splice.apply this, a
+            for i in [0..2]
+                this[i] = a[i].slice 0
         else
             throw new Error 'arguments not array!'
 
+    ':': (n) -> this.reduce(
+        (s,v,i) ->
+            s.push v if i[1] == n
+            return s
+        []
+    )
     size: [3,3]
     multiply: (m) ->
-        product = new Matrix3 0
-        for i in [0..2]
-            for j in [0..2]
-                for k in [0..2]
-                    product[i][j] += @[i][k] * m[k][j]
-        return product
+        @map (v,i,a) ->
+            sum = 0
+            sum += a[i[0]][k] * m[k][i[1]] for k in [0..2]
+            return sum
 
-    add: (m) ->
-        sum = new Matrix3 0
+    add: (m) -> @map (v,i) -> v + m[i[0]][i[1]]
+
+    slice: (start, end) ->
+        (this.reduce ((s,v) -> s.push v), []).slice start, end
+
+    forEach: (callback) ->
         for i in [0..2]
             for j in [0..2]
-                sum[i][j] = @[i][j] + m[i][j]
+                callback this[i][j], [i,j], this
+        return undefined
+
+    map: (callback) ->
+        m = new Matrix3()
+        this.forEach (v,i,a) -> m[i[0]][i[1]] = callback v,i,a
+        return m
+
+    reduce: (callback, sum) ->
+        this.forEach (v,i,a) -> sum = callback sum, v, i, a
         return sum
+
 
 sin = Math.sin
 cos = Math.cos

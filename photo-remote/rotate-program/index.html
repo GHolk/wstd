@@ -1,0 +1,64 @@
+<!DOCTYPE HTML>
+<html lang="zh-TW" prefix="og: http://ogp.me/ns#">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="UTF-8">
+<meta name="author" property="og:article:author" content="c34031328">
+<meta name="copyright" content="Common Creative, by c34031328">
+<meta name="generator" content="vim, markdown">
+<!-- 以上一般不用改，以下才要改。 -->
+
+<!-- 後設資料 -->
+<meta name="date" property="og:article:public_time" content="">
+<meta name="keywords" property="og:article:tag" content="">
+<link rel="index" type="text/html" href="index.html" title="首頁">
+
+<!-- 和網頁位置有關 -->
+<link rel="stylesheet" type="text/css" href="../../ext/word.css">
+
+<title></title>
+</head>
+<body>
+<main>
+</main>
+
+<pre class="markdown raw">
+旋轉矩陣計算
+============
+三度空間中一個點，
+分別繞 X Y Z 軸旋轉 &Omega; &Phi; &Kappa; 弧度，
+結果可以表示成旋轉矩陣乘上該點的座標向量；
+實作中需要用到矩陣的相乘，
+將多次旋轉的相乘，用一個矩陣代表三次轉旋。
+
+低階的 C 語言
+-------------
+一開始用 C 寫，結果覺得宣告矩陣超麻煩。
+我是用二維陣列模擬矩陣，
+但 C 又只能在初始化陣列時對多個陣列賦值。
+覺得不管怎麼作都很麻煩，
+在副函數宣告的矩陣又不能回傳，
+試了很多寫法都不滿意。
+
+C 的問題是對底層過於嚴格，
+我認為需要親自管理記憶體的語言都太低階，
+不想用。
+
+因為是用 JS 寫的，
+就用 **物件導向** 來寫。
+宣告一個 matrix class ，
+有 public 方法 multiply ，
+可以接受另一個 matrix 作輸入，
+返回一個新的 matrix ；
+所以可以像 jQuery **鏈式呼叫** ：
+`m4 = m1.multiply(m2).multiply(m3)` 。
+
+用 matlab 寫，還可以用匿名函數，
+一行搞定一種矩陣宣告。
+`mw = @(w) [1 0 0; 0 cos(w) sin(w); 0 -sin(w) cos(w)]`
+</pre>
+
+<script src="../../ext/luser-meta.js" defer></script>
+
+</body>
+</html>

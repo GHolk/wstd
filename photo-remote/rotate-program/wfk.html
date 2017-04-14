@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <script src="wfk.js"></script>
     <meta charset="UTF-8">
+    <script src="wfk.js"></script>
 <style>
 td {
     padding: 0.1em 0.3em;
@@ -13,22 +13,45 @@ table {
     border-radius: 0.5em;
     margin: 1em 0.8em;
 }
+form {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+}
+textarea {
+    display: block;
+    height: 30em;
+    width: 30em;
+}
 </style>
+<title> 旋轉矩陣計算 </title>
 </head>
 <body>
 
-    <table>
-        <tr><td>a <td>b
-        <tr><td>c <td>d
-        <caption>test</caption>
-    </table>
+<p>
+可以手動輸入或剪下貼上矩陣，
+離開輸入框後會輸出計算的結在左側。
+格式用空白或 tab 分隔。
+</p>
+
+<pre>
+影像名稱1 繞X軸弧度 繞Y軸弧度 繞Z軸弧度 
+影像名稱2 繞X軸弧度 繞Y軸弧度 繞Z軸弧度 
+...       ...       ...       ...
+</pre>
+
+<p>
+或直接由左下方選取 australis 輸出的 
+<code>*_EOIO.txt</code> 。
+</p>
 
 <form>
-<textarea>
+<textarea placeholder="name &omega; &phi; &kappa;">
 </textarea>
 <input type="file">
-<output></output>
 </form>
+
+<output></output>
 
 <script>
 (function(){
@@ -59,11 +82,9 @@ function parseEoioText(text) {
 
     function truncatText(text) {
         var i = text.match(/omega\s*phi\s*kappa/i)
-        if (i) text = text.slice(i.index)
+        if (i) text = text.slice(i.index).replace(/^.*?\n/,'')
         var j = text.indexOf('\n\n')
         if (j != -1) text = text.slice(0,j)
-        j = text.indexOf('\n')
-        text = text.slice(j+1)
         return text
     }
 
