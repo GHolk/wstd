@@ -14,7 +14,7 @@
 <link rel="index" type="text/html" href="index.html" title="首頁">
 
 <!-- 和網頁位置有關 -->
-<link rel="stylesheet" type="text/css" href="../../ext/word.css">
+<link rel="stylesheet" type="text/css" href="http://gholk.github.io/ext/word.css">
 
 <title>旋轉矩陣程式記錄</title>
 </head>
@@ -178,7 +178,9 @@ md.rotateWFKMatrix = rotateWFKMatrix
 誤差大約在 1E-9 ，
 而 australis 的輸出小數到 1E-8 而已，
 我的計算結果則是到 1E-16 ，
-可以視為資料型態轉換造成的誤差。</p>
+可以視為資料型態轉換造成的誤差。
+（比較上是把矩陣平展，再逐項比較。
+反正都差很少，也看不出系統誤差。）</p>
 <table>
 <thead>
 <tr>
@@ -1769,6 +1771,8 @@ JS 物向導向
 而 australis 的輸出小數到 1E-8 而已，
 我的計算結果則是到 1E-16 ，
 可以視為資料型態轉換造成的誤差。
+（比較上是把矩陣平展，再逐項比較。
+反正都差很少，也看不出系統誤差。）
 
 wfk.js|australis|絕對誤差|相對誤差
 -------|----------|-------|----------
@@ -2009,7 +2013,8 @@ wfk.js|australis|絕對誤差|相對誤差
 
 </pre>
 
-<script src="../../ext/luser-meta.js" defer></script>
+<footer></footer>
+<script src="http://gholk.github.io/ext/luser-meta.js" defer></script>
 
 </body>
 </html>

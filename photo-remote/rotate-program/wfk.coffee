@@ -17,16 +17,6 @@ class Matrix3
         else
             throw new Error 'arguments not array!'
 
-    ':': (n) ->
-    # m[':'](n) to access nth column of m, 
-    # just like syntax of matlab. 
-        this.reduce(
-            (s,v,i) ->
-                s.push v if i[1] == n
-                return s
-            []
-        )
-
     size: [3,3] # Matrix3 is [3,3] matrix.
 
     forEach: (callback) ->
@@ -47,6 +37,16 @@ class Matrix3
     reduce: (callback, sum) ->
         this.forEach (v,i,a) -> sum = callback sum, v, i, a
         return sum
+
+    ':': (n) ->
+    # m[':'](n) to access nth column of m, 
+    # just like syntax of matlab. 
+        this.reduce(
+            (s,v,i) ->
+                s.push v if i[1] == n
+                return s
+            []
+        )
 
     multiply: (m) ->
     # matrix to matrix multiply, return a new matrix.

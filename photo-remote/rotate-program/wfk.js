@@ -26,15 +26,6 @@
       }
     }
 
-    Matrix3.prototype[':'] = function(n) {
-      return this.reduce(function(s, v, i) {
-        if (i[1] === n) {
-          s.push(v);
-        }
-        return s;
-      }, []);
-    };
-
     Matrix3.prototype.size = [3, 3];
 
     Matrix3.prototype.forEach = function(callback) {
@@ -61,6 +52,15 @@
         return sum = callback(sum, v, i, a);
       });
       return sum;
+    };
+
+    Matrix3.prototype[':'] = function(n) {
+      return this.reduce(function(s, v, i) {
+        if (i[1] === n) {
+          s.push(v);
+        }
+        return s;
+      }, []);
     };
 
     Matrix3.prototype.multiply = function(m) {
