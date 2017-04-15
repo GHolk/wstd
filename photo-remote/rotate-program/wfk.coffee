@@ -1,6 +1,11 @@
 
 class Matrix3
+# Matrix3 is 2 demition array,
+# access m(i,j) by m[i][j].
+
     constructor: (a = 0) ->
+    # a = number, [1,2,3,4,5,6,7,8,9], [[1,2,3],[4,5,6],[7,8,9]].
+    # if no arguments, a = 0.
         a = [1..9].map( -> a ) if typeof a == 'number'
 
         if a.length >= 9
@@ -12,20 +17,29 @@ class Matrix3
         else
             throw new Error 'arguments not array!'
 
-    ':': (n) -> this.reduce(
-        (s,v,i) ->
-            s.push v if i[1] == n
-            return s
-        []
-    )
-    size: [3,3]
+    ':': (n) ->
+    # m[':'](n) to access nth column of m, 
+    # just like syntax of matlab. 
+        this.reduce(
+            (s,v,i) ->
+                s.push v if i[1] == n
+                return s
+            []
+        )
+
+    size: [3,3] # Matrix3 is [3,3] matrix.
+
     forEach: (callback) ->
+    # callback will get 3 argument v,i,m, 
+    # v = current value, i = [row, col], m = matrix it self.
+    # row first order.
         for i in [0..2]
             for j in [0..2]
                 callback this[i][j], [i,j], this
         return undefined
 
     map: (callback) ->
+    # map will return a new Matrix3 instance.
         m = new Matrix3()
         this.forEach (v,i,a) -> m[i[0]][i[1]] = callback v,i,a
         return m
@@ -35,6 +49,7 @@ class Matrix3
         return sum
 
     multiply: (m) ->
+    # matrix to matrix multiply, return a new matrix.
         @map (v,i,a) ->
             a[i[0]].reduce(
                 (s,v,j) -> s + v*m[j][i[1]]
@@ -42,7 +57,10 @@ class Matrix3
             )
 
     add: (m) -> @map (v,i) -> v + m[i[0]][i[1]]
+    # add by matrix, return a new matrix.
 
+    # convert Matrix3 into 1 demantion array, 
+    # and slice.
     slice: (start, end) ->
         (this.reduce ((s,v) -> s.push v), []).slice start, end
 
@@ -50,6 +68,7 @@ class Matrix3
 sin = Math.sin
 cos = Math.cos
 
+# define omega, phi, kappa rotate matrix.
 rotateMatrix =
     omega: (w) -> new Matrix3 [
         [1, 0, 0]
@@ -67,11 +86,15 @@ rotateMatrix =
         [0, 0, 1]
     ]
 
+# define a function directly return 
+# a matrix rotate by omega, phi, kappa. 
 rotateWFKMatrix = (w, f, k) ->
     rotateMatrix.kappa k
         .multiply rotateMatrix.phi f
         .multiply rotateMatrix.omega w
 
+
+# check is excute in nodejs or browser.
 if  typeof exports == 'object'
     md = exports
 else if typeof window == 'object'
@@ -80,6 +103,7 @@ else if typeof window == 'object'
 else
     md = {}
 
+# export modules.
 md.Matrix3 = Matrix3
 md.rotateMatrix = rotateMatrix
 md.rotateWFKMatrix = rotateWFKMatrix
