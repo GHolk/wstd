@@ -54,7 +54,9 @@ int main(int argc, char* argv[]) {
         for (int i=0; i<3; i++) sscanf(argv[i+1], "%lf", &degree[i]);
     }
     else {
-        for (int i=0; i<3; i++) scanf("%lf", &degree[i]);
+        FILE *eoio = fopen("eoio.tsv","r");
+        for (int i=0; i<3; i++) fscanf(eoio, "%lf", &degree[i]);
+        fclose(eoio);
     }
 
     Matrix3 m[] = {

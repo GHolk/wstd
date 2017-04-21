@@ -48,11 +48,28 @@ class Matrix3
             []
         )
 
-    multiply: (m) ->
+    multiply: (target) ->
+        if target.size.length == 2
+            multiplyMatrix this, target
+        else if target.size.length == 1
+            multiplyVector this, target
+        else
+            throw new Error "not vector or matrix"
+
+    multiplyMatrix = (m1, m2) ->
     # matrix to matrix multiply, return a new matrix.
-        @map (v,i,a) ->
+        m1.map (v,i,a) ->
             a[i[0]].reduce(
-                (s,v,j) -> s + v*m[j][i[1]]
+                (s,v,j) -> s + v*m2[j][i[1]]
+                0
+            )
+
+    multiplyVector = (m, v) ->
+    # vector is 1 demetion array.
+    # matrix to vector multiply, return n new vector.
+        v.map (vi,i,v) ->
+            m[i].reduce(
+                (s,mi,i) -> s + mi*v[i]
                 0
             )
 

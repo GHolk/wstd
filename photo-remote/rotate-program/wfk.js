@@ -3,6 +3,8 @@
   var Matrix3, cos, md, rotateMatrix, rotateWFKMatrix, sin;
 
   Matrix3 = (function() {
+    var multiplyMatrix, multiplyVector;
+
     function Matrix3(a) {
       var i, l, o;
       if (a == null) {
@@ -63,10 +65,28 @@
       }, []);
     };
 
-    Matrix3.prototype.multiply = function(m) {
-      return this.map(function(v, i, a) {
+    Matrix3.prototype.multiply = function(target) {
+      if (target.size.length === 2) {
+        return multiplyMatrix(this, target);
+      } else if (target.size.length === 1) {
+        return multiplyVector(this, target);
+      } else {
+        throw new Error("not vector or matrix");
+      }
+    };
+
+    multiplyMatrix = function(m1, m2) {
+      return m1.map(function(v, i, a) {
         return a[i[0]].reduce(function(s, v, j) {
-          return s + v * m[j][i[1]];
+          return s + v * m2[j][i[1]];
+        }, 0);
+      });
+    };
+
+    multiplyVector = function(m, v) {
+      return v.map(function(vi, i, v) {
+        return m[i].reduce(function(s, mi, i) {
+          return s + mi * v[i];
         }, 0);
       });
     };
