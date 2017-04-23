@@ -178,7 +178,8 @@ var points = {
 var pointsInPhoto = {}
 
 // photo size
-photoSize = [3328, 1872].map(function(s){ return s * 0.0000014 / 2 })
+photoSize = [3328, 1872]
+    .map(function(s){ return s * 0.0000014 / 2 })
 
 // object save colinearity solver for each photo. 
 var solvers = {}
@@ -270,7 +271,40 @@ exports.pe = photoPointError
 exports.prip = pointsInPhoto
 exports.createIcfStructure = createIcfTable
 exports.tableString = tableString
-</code></pre>
+</code></pre><h2 id="-">成果</h2>
+<h3 id="-">誤差圖</h3>
+<p><img src="icfs/error-xy.svg" alt="dx dy distribution"></p>
+<p>單位為公尺，各影像用不同的符號。</p>
+<h3 id="-">誤差資料</h3>
+<ul>
+<li><a href="icfs/IMG_20170329_142042.err">IMG_20170329_142042</a></li>
+<li><a href="icfs/IMG_20170329_142058.err">IMG_20170329_142058</a></li>
+<li><a href="icfs/IMG_20170329_142125.err">IMG_20170329_142125</a></li>
+<li><a href="icfs/IMG_20170329_142211.err">IMG_20170329_142211</a></li>
+<li><a href="icfs/IMG_20170329_142226.err">IMG_20170329_142226</a></li>
+<li><a href="icfs/IMG_20170329_142240.err">IMG_20170329_142240</a></li>
+<li><a href="icfs/IMG_20170329_142246.err">IMG_20170329_142246</a></li>
+<li><a href="icfs/IMG_20170329_142256.err">IMG_20170329_142256</a></li>
+<li><a href="icfs/IMG_20170329_142310.err">IMG_20170329_142310</a></li>
+<li><a href="icfs/IMG_20170329_142320.err">IMG_20170329_142320</a></li>
+<li><a href="icfs/IMG_20170329_142351.err">IMG_20170329_142351</a></li>
+<li><a href="icfs/IMG_20170329_142410.err">IMG_20170329_142410</a></li>
+<li><a href="icfs/IMG_20170329_142420.err">IMG_20170329_142420</a></li>
+<li><a href="icfs/IMG_20170329_142427.err">IMG_20170329_142427</a></li>
+<li><a href="icfs/IMG_20170329_142538.err">IMG_20170329_142538</a></li>
+<li><a href="icfs/IMG_20170329_142549.err">IMG_20170329_142549</a></li>
+<li><a href="icfs/IMG_20170329_142559.err">IMG_20170329_142559</a></li>
+<li><a href="icfs/IMG_20170329_142609.err">IMG_20170329_142609</a></li>
+<li><a href="icfs/IMG_20170329_142617.err">IMG_20170329_142617</a></li>
+<li><a href="icfs/IMG_20170329_142631.err">IMG_20170329_142631</a></li>
+<li><a href="icfs/IMG_20170329_142643.err">IMG_20170329_142643</a></li>
+<li><a href="icfs/IMG_20170329_142700.err">IMG_20170329_142700</a></li>
+<li><a href="icfs/IMG_20170329_142713.err">IMG_20170329_142713</a></li>
+<li><a href="icfs/IMG_20170329_142724.err">IMG_20170329_142724</a></li>
+<li><a href="icfs/IMG_20170329_142739.err">IMG_20170329_142739</a></li>
+<li><a href="icfs/IMG_20170329_142744.err">IMG_20170329_142744</a></li>
+</ul>
+
 </main>
 
 <pre class="markdown raw">
@@ -537,6 +571,41 @@ colinearitySolverGenerator
     exports.prip = pointsInPhoto
     exports.createIcfStructure = createIcfTable
     exports.tableString = tableString
+
+成果
+----
+### 誤差圖
+![dx dy distribution](icfs/error-xy.svg)
+
+單位為公尺，各影像用不同的符號。
+
+### 誤差資料
+  - [IMG_20170329_142042](icfs/IMG_20170329_142042.err)
+  - [IMG_20170329_142058](icfs/IMG_20170329_142058.err)
+  - [IMG_20170329_142125](icfs/IMG_20170329_142125.err)
+  - [IMG_20170329_142211](icfs/IMG_20170329_142211.err)
+  - [IMG_20170329_142226](icfs/IMG_20170329_142226.err)
+  - [IMG_20170329_142240](icfs/IMG_20170329_142240.err)
+  - [IMG_20170329_142246](icfs/IMG_20170329_142246.err)
+  - [IMG_20170329_142256](icfs/IMG_20170329_142256.err)
+  - [IMG_20170329_142310](icfs/IMG_20170329_142310.err)
+  - [IMG_20170329_142320](icfs/IMG_20170329_142320.err)
+  - [IMG_20170329_142351](icfs/IMG_20170329_142351.err)
+  - [IMG_20170329_142410](icfs/IMG_20170329_142410.err)
+  - [IMG_20170329_142420](icfs/IMG_20170329_142420.err)
+  - [IMG_20170329_142427](icfs/IMG_20170329_142427.err)
+  - [IMG_20170329_142538](icfs/IMG_20170329_142538.err)
+  - [IMG_20170329_142549](icfs/IMG_20170329_142549.err)
+  - [IMG_20170329_142559](icfs/IMG_20170329_142559.err)
+  - [IMG_20170329_142609](icfs/IMG_20170329_142609.err)
+  - [IMG_20170329_142617](icfs/IMG_20170329_142617.err)
+  - [IMG_20170329_142631](icfs/IMG_20170329_142631.err)
+  - [IMG_20170329_142643](icfs/IMG_20170329_142643.err)
+  - [IMG_20170329_142700](icfs/IMG_20170329_142700.err)
+  - [IMG_20170329_142713](icfs/IMG_20170329_142713.err)
+  - [IMG_20170329_142724](icfs/IMG_20170329_142724.err)
+  - [IMG_20170329_142739](icfs/IMG_20170329_142739.err)
+  - [IMG_20170329_142744](icfs/IMG_20170329_142744.err)
 
 </pre>
 
