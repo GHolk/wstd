@@ -21,6 +21,7 @@
 </head>
 <body>
 <main>
+
 <h1 id="-bottom-up">共線式 bottom-up</h1>
 <p>共線式是指投影原點、影像座標、
 地面點，三點連成一條直線。利用這點，
@@ -29,16 +30,17 @@
 即可由地面點推回影像座標，
 稱為 bottom-up 的共線式計算。</p>
 <p>最近在練習 nodejs ，
-把上次的 matrix 模組重寫了一遍，
-試著用了 <strong>原型繼承</strong> 的寫法。
-然後為了計算共線式，又寫了個 vector 模組。
+把 <a href="wfk.coffee">上次的 matrix 模組</a> 重寫了一遍，
+試著用了 <a href="node_modules/matrix.coffee">原型繼承的寫法</a> 。
+然後為了計算共線式，又寫了個 
+<a href="node_modules/vector.coffee">vector 模組</a> 。
 一個 matrix 可以乘上 vector ，
 返回一個 vector 。</p>
 <p>再寫一個模組，先引用 vector 和 matrix ，
 輸入內外方位參數，會返回一個函數，
 這個返回的函數可以接受地面座標，返回影像座標。
 所以我的模組是個 <em>返回函數的函數</em> 。</p>
-<h2 id="colinearitysolvergenerator">colinearitySolverGenerator</h2>
+<h2 id="-colinearitysolvergenerator-node_modules-colinearitysolvergenerator-coffee-"><a href="node_modules/colinearitySolverGenerator.coffee">colinearitySolverGenerator</a></h2>
 <pre><code># load matrix and vector module
 switch
     when require
@@ -131,7 +133,7 @@ switch
         window.colinearitySolverGenerator = colinearitySolverGenerator
 </code></pre><h2 id="-">包裝腳本</h2>
 <p>上面只是核心程式，還要讀入座標、
-輸出結果，用另一個腳本包裝。
+輸出結果，用 <a href="coli.js">另一個腳本包裝</a> 。
 作業要求要讀入 icf 檔， icf 格式簡單還行，
 各影像座標的內外方位參數就太難讀了，
 所有點位的座標也是，就都直接寫入腳本裡。
@@ -273,7 +275,7 @@ exports.createIcfStructure = createIcfTable
 exports.tableString = tableString
 </code></pre><h2 id="-">成果</h2>
 <h3 id="-">誤差圖</h3>
-<p><img src="icfs/error-xy.svg" alt="dx dy distribution"></p>
+<p><img src="icfs/error-vector-xy.svg" alt="x y dx dy distribution"></p>
 <p>單位為公尺，各影像用不同的符號。</p>
 <h3 id="-">誤差資料</h3>
 <ul>
@@ -319,9 +321,10 @@ exports.tableString = tableString
 稱為 bottom-up 的共線式計算。
 
 最近在練習 nodejs ，
-把上次的 matrix 模組重寫了一遍，
-試著用了 **原型繼承** 的寫法。
-然後為了計算共線式，又寫了個 vector 模組。
+把 [上次的 matrix 模組](wfk.coffee) 重寫了一遍，
+試著用了 [原型繼承的寫法](node_modules/matrix.coffee) 。
+然後為了計算共線式，又寫了個 
+[vector 模組](node_modules/vector.coffee) 。
 一個 matrix 可以乘上 vector ，
 返回一個 vector 。
 
@@ -331,8 +334,8 @@ exports.tableString = tableString
 所以我的模組是個 *返回函數的函數* 。
 
 
-colinearitySolverGenerator
---------------------------
+[colinearitySolverGenerator](node_modules/colinearitySolverGenerator.coffee)
+----------------------------
 
     # load matrix and vector module
     switch
@@ -429,7 +432,7 @@ colinearitySolverGenerator
 包裝腳本
 --------
 上面只是核心程式，還要讀入座標、
-輸出結果，用另一個腳本包裝。
+輸出結果，用 [另一個腳本包裝](coli.js) 。
 作業要求要讀入 icf 檔， icf 格式簡單還行，
 各影像座標的內外方位參數就太難讀了，
 所有點位的座標也是，就都直接寫入腳本裡。
@@ -575,7 +578,7 @@ colinearitySolverGenerator
 成果
 ----
 ### 誤差圖
-![dx dy distribution](icfs/error-xy.svg)
+![x y dx dy distribution](icfs/error-vector-xy.svg)
 
 單位為公尺，各影像用不同的符號。
 
