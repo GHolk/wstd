@@ -17,6 +17,8 @@
 <link rel="index" href="index.html" title="索引">
 <link rel="prev" href="rotate-matrix-wfk.html" title="旋轉矩陣程式記錄">
 
+<link href="http://cdn.bootcss.com/highlight.js/8.0/styles/tomorrow.min.css" rel="stylesheet">
+
 <title>共線式 bottom-up</title>
 </head>
 <body>
@@ -41,7 +43,7 @@
 這個返回的函數可以接受地面座標，返回影像座標。
 所以我的模組是個 <em>返回函數的函數</em> 。</p>
 <h2 id="-colinearitysolvergenerator-node_modules-colinearitysolvergenerator-coffee-"><a href="node_modules/colinearitySolverGenerator.coffee">colinearitySolverGenerator</a></h2>
-<pre><code># load matrix and vector module
+<pre><code class="language-coffeescript"># load matrix and vector module
 switch
     when require
         vector = require &#39;vector&#39;
@@ -139,7 +141,7 @@ switch
 所有點位的座標也是，就都直接寫入腳本裡。
 這個寫腳本的過程也差不多和寫 bottom-up 模組一樣長了，
 程式最麻煩的往往是外部的包裝，不是核心啊。</p>
-<pre><code>var colinearitySolverGenerator
+<pre><code class="language-javascript">var colinearitySolverGenerator
 
 if (typeof window == &#39;object&#39;) {
     colinearitySolverGenerator = window.colinearitySolverGenerat
@@ -615,6 +617,9 @@ exports.tableString = tableString
 <footer></foote>
 <script src="https://gholk.github.io/ext/luser-meta.js" defer></script>
 <script src="https://gholk.github.io/ext/luser-anchor-qrcode.js" defer></script>
+
+<script src="http://cdn.bootcss.com/highlight.js/8.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>  
 
 </body>
 </html>
