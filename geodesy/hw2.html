@@ -1,0 +1,245 @@
+<!DOCTYPE HTML>
+<html lang="zh-TW" prefix="og: http://ogp.me/ns#">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="UTF-8">
+<meta name="author" property="og:article:author" content="c34031328">
+<meta name="copyright" content="Common Creative, by c34031328">
+<meta name="generator" content="vim">
+<!-- 以上一般不用改，以下才要改。 -->
+
+<!-- 後設資料 -->
+<meta name="date" property="og:article:public_time" content="">
+<meta name="keywords" property="og:article:tag" content="geodesy,大地測量,作業,大地橢球">
+
+<!-- 和網頁位置有關 -->
+<link rel="stylesheet" type="text/css" href="https://gholk.github.io/ext/word.css">
+
+<title></title>
+</head>
+<body>
+<main>
+</main>
+
+<pre class="markdown raw">
+大地測量作業二
+==============
+Due day: 5/19/2017
+
+名詞解釋
+--------
+
+請分別定義擾動位能、重力擾動、重力異常、大地起伏、垂線偏差、高度異常，並利用球諧函數表示和說明。
+需列式表示並列出計算過程
+
+### 擾動位能
+在任一點上， **實際重力位** 與 **正常重力位** 的差。
+實際重力位就是現場測得的重力位能；
+而正常重力位則是用大地橢球推算出來的。
+
+擾動位能滿足 Laplace Equation ，
+
+&Delta; W = &Delta; V + &Delta; &Phi; = 0 + 2 &omega; <sup>2</sup>
+
+&Delta; U = &Delta; V <sub>E</sub> +
+&Delta; &Phi; <sub>E</sub> = 0 + 2 &omega; <sup>2</sup>
+
+由於橢球自轉速率與實際地球自轉速率幾乎相同，
+&Phi; <sub>E</sub> ≒ &Phi; 。
+
+且正常引力位與引力位也滿足
+&Delta; V = &Delta; V <sub>E</sub> = 0
+
+故
+&Delta; T = &Delta; ( W - U ) =
+&Delta; ( V + &Phi; - V <sub>E</sub> - &Phi;<sub>E</sub> ) = 
+&Delta; V - &Delta; V <sub>E</sub> =
+0 - 0 = 0
+
+    .EQ
+    T ( r , theta , lambda ) =
+    Sum from n = 0 to infinity
+    ( R over r ) sup { n + 1 }
+    T sub n ( theta , lambda )
+    .EN
+
+<math><mrow><mi>T</mi><mo>(</mo><mi>r</mi><mo>,</mo><mo>&theta;</mo><mo>,</mo><mo>&lambda;</mo><mo>)</mo><mo>&equals;</mo><munder><mrow><mi>S</mi><mi>u</mi><mi>m</mi></mrow><mi>n</mi></munder><mo>&equals;</mo><mover><mn>0</mn><mrow><mi>i</mi><mi>n</mi><mi>f</mi><mi>i</mi><mi>n</mi><mi>i</mi><mi>t</mi><mi>y</mi></mrow></mover><mo>(</mo><mfrac><mi>R</mi><mi>r</mi></mfrac><msup><mo>)</mo><mrow><mi>n</mi><mo>&plus;</mo><mn>1</mn></mrow></msup><msub><mi>T</mi><mi>n</mi></msub><mo>(</mo><mo>&theta;</mo><mo>,</mo><mo>&lamda;</mo><mo>)</mo></mrow></math>
+
+擾動位為實際重力位與正常重力位的相減，
+各階的 cos sin 系數也是。
+由於正常重力位為橢球，沒有經度方向的變化，
+若 n 為偶數，正常重力位 cos 系數為 0 ， CTnm = Cnm 。
+
+若橢球與實際地球質量相等，則 0 階項為 0 。
+若橢球中心與實際地球中心重合，則 1 階項為 0 。
+
+
+### 重力擾動
+重力擾動則是加速度，
+也就是一點上 **實際重力加速度** 與
+**正常重力加速度** 的差，
+是一個向量，一般直接表示為向量的長度。
+
+    .EQ
+    delta vec g = vec { g sub p } - vec { gamma sub p }
+    .EN
+
+<math><mrow><mover accent='true'><mo>&delta;</mo><mo>&rarr;</mo></mover><mi>g</mi><mover accent='true'><mo>&equals;</mo><mo>&rarr;</mo></mover><msub><mi>g</mi><mi>p</mi></msub><mover accent='true'><mo>&minus;</mo><mo>&rarr;</mo></mover><msub><mo>&gamma;</mo><mi>p</mi></msub></mrow></math>
+
+一般重力擾動的計算較困難，
+因為要計算不在橢球上的重力加速度，
+再與實際測得的重力加速度相減。
+也可以簡單以重力異常近似。
+
+### 重力異常
+重力異常是橢球上一點 Q 的正常重力加速度，
+與該點垂線與地表交點 P 的實際重力加速度差，
+也是一個向量，因為角度不會差太多，
+所以常表示為純量。
+
+.EQ
+Delta vec g = vec g sub P - vec gamma sub Q
+.EN
+
+可以用重力加速度儀在地面測得 g <sub>P</sub> ，
+再用大地橢球算得 &gamma; <sub>Q</sub> ，
+相減即是重力異常。
+
+### 大地起伏
+**大地水準面** 與 **大地橢球** 間的 **橢球高** 差，
+在地表上一點的話，大地起伏就是正高減去橢球高， N = H - h 。
+
+### 垂線偏差
+重力線與橢球法線方向的角度差。
+與 **平均地球橢球** 的稱為 **絕對垂線偏差** ，
+與各參考橢球的稱為 **相對垂線偏差** 。
+
+### 高程異常
+**橢球高** 與 **正常高** 差，
+也就是 **似地表面** 與地表面的差。
+
+沿橢球面法線方向，
+重力位與地表上實際一點相同的點，
+該點與橢球面距離稱為正常高。
+計算得與所有地表上的點位能相同的點
+所構成的平面，則稱為似地表面。
+
+
+擾動位能的調和函數
+------------------
+請證明擾動位能T(x,y,z)是否為調和函數。
+需列出推導過程
+
+上面在名詞解釋證過了。
+
+
+擾動位能的球近似
+----------------
+
+.EQ
+{ \(pd T sub P } over
+{ \(pd h } -
+{ T sub P } over { gamma sub Q }
+{ \(pd gamma } over
+{ \(pd h } | sub Q +
+Delta g sub P = 0
+.EN
+
+<math><mrow><mfrac><mrow><mo>&part;</mo><msub><mi>T</mi><mi>P</mi></msub></mrow><mrow><mo>&part;</mo><mi>h</mi></mrow></mfrac><mo>&minus;</mo><mfrac><msub><mi>T</mi><mi>P</mi></msub><msub><mo>&gamma;</mo><mi>Q</mi></msub></mfrac><mfrac><mrow><mo>&part;</mo><mo>&gamma;</mo></mrow><mrow><mo>&part;</mo><mi>h</mi></mrow></mfrac><msub><mi>|</mi><mi>Q</mi></msub><mo>&plus;</mo><mo>&Delta;</mo><msub><mi>g</mi><mi>P</mi></msub><mo>&equals;</mo><mn>0</mn></mrow></math>
+
+請詳細此公式之意義，並說明此公式之球近似。
+並解釋各參數的定義、公式意義。
+
+此公式將觀測得的地表實際重力，
+與擾動位關連。但由於是微分方程，
+要有整個空間所有點的 &Delta;g 才能求解 T 。
+
+由於大地橢球與球的誤差約只有 1/300 ，
+而擾動位相比重力位很小。
+就像重力加速度 9.8 的 1/300 很大，
+但重力異常 9.8... - 9.8... = 0.0... 的 1/300 就很小。
+所以可以用球近似簡化：
+
+.EQ
+gamma = { G M } over { r sup 2 }
+.EN
+
+.EQ
+{ part gamma } over { part h } =
+{ part gamma } over { part r } =
+- 2 { G M } over { r sup 3 }
+.EN
+
+.EQ
+{ part T } over { part r } +
+2 over r T + Delta g = 0
+.EN
+
+這樣只要有所有 geoid 上的 &Delta;g ，就能解 T 。
+然後解 N ，得到 geoid 。
+
+球諧函數各階的 cos sin 系數意義同橢球的版本：
+
+ n | m | Cnm &times; E-6 | Cnm &times; E-6
+---|---|-----------------|----------------
+ 2 | 0 | -484165.14 | 1.38
+ 2 | 1 | -0.21 | 1.38
+ 2 | 2 | 2439.38 | -1400.27
+ 3 | 0 | 957.16 | 0
+ 3 | 1 | 2029.22 | 248.20
+ 3 | 2 | 904.79 | -619.01
+ 3 | 3 | 721.32 | 1414.35
+
+  - C00 是橢球質量，在參考球上為 0 。
+  - C01 C10 S10 是質心與原點偏差，
+    在參考球上為 0 。
+  - C20 是地球扁率，所以很大。
+  - C21 與 S21 是與地球自轉軸的重合有關，所以也很小。
+
+
+無限寛廣的海洋
+--------------
+假設你於一個無限寬廣的海水面上測量重力，假設儀器分別位於船上和固定柱上，儀器到海水面距離為零，船上和固定柱上儀器至水面距離為零，此時水面突然上升2公尺，請問此時重力儀上的重力讀數分別變化多少? (記得單位和正負號)?
+需解釋變化原因及並列出計算過程
+
+因為水面上升了 2m ，我們離原始海水遠了 2m ，
+可以視為反向的自由空間約化。
+
+F &asymp; 0.3086 H = - 0.6172 mgals
+
+g' = g + F = g - 0.6172
+
+此時我們是懸在空中，離海面 2m ，
+還得要把這 2m 填滿海水，
+可以視為反向的布格平板改正。
+
+A = 2 &pi; G &rho; H = 2 &pi; &times; 0.0066732 H = 0.0419101123
+
+g'' = g' + A = g - 0.6172 + 0.041910 = g + 0.659110
+
+蠻有趣的，海水面上升，雖然水的質量增加，
+但因為離地球更遠，重力反而減小了。
+
+
+4. EGM2008重力場模型中n ≤ 3的係數如下所示：
+請利用上列係數和GRS80為參考橢球，計算全球一度網格上之重力異常和大地起伏（需畫圖）。(這題可延到5/30交)
+需附程式碼及繪圖成果
+5. 利用上題計算之網格重力異常，利用Stokes’formula計算台灣地區一度網格大地起伏(緯度：18.5-26.5; 經度:118.5-123.5) （需畫圖），並與上題計算之大地起伏比較。(這題可延到5/30交)
+需列計算過程並附程式碼
+
+7. 請詳細說明如何求得Free-air anomaly、Bouguer anomaly、Faye anomaly 、Isostatic anomaly(各種重力約化需說明)。若一點位(緯度：18.543度; 經度:118.554度，正高20.321公尺)之觀測絕對重力值為9.8232542 m/s^2，請問該點在大地水準面對應點之Free-air anomaly和Bouguer anomaly為何?
+(1) 中文名詞定義，說明各約化過程並列式
+(2) 需列出計算過程
+
+8. 若P點量測重力為g，請問P0點重力為何？P至P0點的平均重力為何？
+需列出計算過程及答案
+
+</pre>
+
+<footer></footer>
+<script src="https://gholk.github.io/ext/luser-meta.js" defer></script>
+<script src="https://gholk.github.io/ext/luser-anchor-qrcode.js" defer></script>
+
+</body>
+</html>
+
