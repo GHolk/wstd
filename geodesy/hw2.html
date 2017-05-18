@@ -9,7 +9,7 @@
 <!-- 以上一般不用改，以下才要改。 -->
 
 <!-- 後設資料 -->
-<meta name="date" property="og:article:public_time" content="">
+<meta name="date" property="og:article:public_time" content="2017-05-13"> 
 <meta name="keywords" property="og:article:tag" content="geodesy,大地測量,作業,大地橢球">
 
 <!-- 和網頁位置有關 -->
@@ -19,6 +19,301 @@
 </head>
 <body>
 <main>
+<h1>大地測量作業二</h1>
+<p>Due day: 5/19/2017</p>
+<h2>名詞解釋</h2>
+<p>請分別定義擾動位能、重力擾動、重力異常、大地起伏、垂線偏差、高度異常，並利用球諧函數表示和說明。
+需列式表示並列出計算過程</p>
+<h3>擾動位能</h3>
+<p>在任一點上， <strong>實際重力位</strong> 與 <strong>正常重力位</strong> 的差。
+實際重力位就是現場測得的重力位能；
+而正常重力位則是用大地橢球推算出來的。</p>
+<p>擾動位能滿足 Laplace Equation ，</p>
+<p>&Delta; W = &Delta; V + &Delta; &Phi; = 0 + 2 &omega; <sup>2</sup></p>
+<p>&Delta; U = &Delta; V <sub>E</sub> +
+&Delta; &Phi; <sub>E</sub> = 0 + 2 &omega; <sup>2</sup></p>
+<p>由於橢球自轉速率與實際地球自轉速率幾乎相同，
+&Phi; <sub>E</sub> ≒ &Phi; 。</p>
+<p>且正常引力位與引力位也滿足
+&Delta; V = &Delta; V <sub>E</sub> = 0</p>
+<p>故
+&Delta; T = &Delta; ( W - U ) =
+&Delta; ( V + &Phi; - V <sub>E</sub> - &Phi;<sub>E</sub> ) = 
+&Delta; V - &Delta; V <sub>E</sub> =
+0 - 0 = 0</p>
+<pre><code>
+.EQ
+T ( r , theta , lambda ) =
+sum from n = 0 to \(if
+( R over r ) sup { n + 1 }
+T sub n ( theta , lambda )
+.EN
+</code></pre>
+
+<math><mrow><mi>T</mi><mo>(</mo><mi>r</mi><mo>,</mo><mo>&theta;</mo><mo>,</mo><mo>&lambda;</mo><mo>)</mo><mo>&equals;</mo><munderover><mstyle mathsize='big'><mo>&Sigma;</mo></mstyle><mrow><mi>n</mi><mo>&equals;</mo><mn>0</mn></mrow><mo>&infin;</mo></munderover><mo>(</mo><mfrac><mi>R</mi><mi>r</mi></mfrac><msup><mo>)</mo><mrow><mi>n</mi><mo>&plus;</mo><mn>1</mn></mrow></msup><msub><mi>T</mi><mi>n</mi></msub><mo>(</mo><mo>&theta;</mo><mo>,</mo><mo>&lamda;</mo><mo>)</mo></mrow></math>
+
+<p>擾動位為實際重力位與正常重力位的相減，
+各階的 cos sin 系數也是。
+由於正常重力位為橢球，沒有經度方向的變化，
+若 n 為偶數，正常重力位 cos 系數為 0 ， CTnm = Cnm 。</p>
+<p>若橢球與實際地球質量相等，則 0 階項為 0 。
+若橢球中心與實際地球中心重合，則 1 階項為 0 。</p>
+<h3>重力擾動</h3>
+<p>重力擾動則是加速度，
+也就是一點上 <strong>實際重力加速度</strong> 與
+<strong>正常重力加速度</strong> 的差，
+是一個向量，一般直接表示為向量的長度。</p>
+<pre><code>
+.EQ
+{ delta g } vec = { g sub p } vec - { gamma sub p } vec
+.EN
+</code></pre>
+
+<math><mrow><mover accent='true'><mrow><mo>&delta;</mo><mi>g</mi></mrow><mo>&rarr;</mo></mover><mo>&equals;</mo><mover accent='true'><msub><mi>g</mi><mi>p</mi></msub><mo>&rarr;</mo></mover><mo>&minus;</mo><mover accent='true'><msub><mo>&gamma;</mo><mi>p</mi></msub><mo>&rarr;</mo></mover></mrow></math>
+
+<p>一般重力擾動的計算較困難，
+因為要計算不在橢球上的重力加速度，
+再與實際測得的重力加速度相減。
+也可以簡單以重力異常近似。</p>
+<h3>重力異常</h3>
+<p>重力異常是橢球上一點 Q 的正常重力加速度，
+與該點垂線與地表交點 P 的實際重力加速度差，
+也是一個向量，因為角度不會差太多，
+所以常表示為純量。</p>
+<pre><code>
+.EQ
+Delta g vec = { g sub P } vec - { gamma sub Q } vec 
+.EN
+</code></pre>
+
+<math><mrow><mo>&Delta;</mo><mover accent='true'><mi>g</mi><mo>&rarr;</mo></mover><mo>&equals;</mo><mover accent='true'><msub><mi>g</mi><mi>P</mi></msub><mo>&rarr;</mo></mover><mo>&minus;</mo><mover accent='true'><msub><mo>&gamma;</mo><mi>Q</mi></msub><mo>&rarr;</mo></mover></mrow></math>
+
+<p>可以用重力加速度儀在地面測得 g <sub>P</sub> ，
+再用大地橢球算得 &gamma; <sub>Q</sub> ，
+相減即是重力異常。</p>
+<h3>大地起伏</h3>
+<p><strong>大地水準面</strong> 與 <strong>大地橢球</strong> 間的 <strong>橢球高</strong> 差，
+在地表上一點的話，大地起伏就是正高減去橢球高， N = H - h 。</p>
+<h3>垂線偏差</h3>
+<p>重力線與橢球法線方向的角度差。
+與 <strong>平均地球橢球</strong> 的稱為 <strong>絕對垂線偏差</strong> ，
+與各參考橢球的稱為 <strong>相對垂線偏差</strong> 。</p>
+<h3>高程異常</h3>
+<p><strong>橢球高</strong> 與 <strong>正常高</strong> 差，
+也就是 <strong>似地表面</strong> 與地表面的差。</p>
+<p>沿橢球面法線方向，
+重力位與地表上實際一點相同的點，
+該點與橢球面距離稱為正常高。
+計算得與所有地表上的點位能相同的點
+所構成的平面，則稱為似地表面。</p>
+<h2>擾動位能的調和函數</h2>
+<p>請證明擾動位能T(x,y,z)是否為調和函數。
+需列出推導過程</p>
+<p>上面在名詞解釋證過了。</p>
+<h2>擾動位能的球近似</h2>
+<pre><code>
+.EQ
+{ \(pd T sub P } over
+{ \(pd h } -
+{ T sub P } over { gamma sub Q }
+{ \(pd gamma } over
+{ \(pd h } | sub Q +
+Delta g sub P = 0
+.EN
+</code></pre><math><mrow><mfrac><mrow><mo>&part;</mo><msub><mi>T</mi><mi>P</mi></msub></mrow><mrow><mo>&part;</mo><mi>h</mi></mrow></mfrac><mo>&minus;</mo><mfrac><msub><mi>T</mi><mi>P</mi></msub><msub><mo>&gamma;</mo><mi>Q</mi></msub></mfrac><mfrac><mrow><mo>&part;</mo><mo>&gamma;</mo></mrow><mrow><mo>&part;</mo><mi>h</mi></mrow></mfrac><msub><mi>|</mi><mi>Q</mi></msub><mo>&plus;</mo><mo>&Delta;</mo><msub><mi>g</mi><mi>P</mi></msub><mo>&equals;</mo><mn>0</mn></mrow></math>
+
+<p>請詳細此公式之意義，並說明此公式之球近似。
+並解釋各參數的定義、公式意義。</p>
+<p>此公式將觀測得的地表實際重力，
+與擾動位關連。但由於是微分方程，
+要有整個空間所有點的 &Delta;g 才能求解 T 。</p>
+<p>由於大地橢球與球的誤差約只有 1/300 ，
+而擾動位相比重力位很小。
+就像重力加速度 9.8 的 1/300 很大，
+但重力異常 9.8... - 9.8... = 0.0... 的 1/300 就很小。
+所以可以用球近似簡化：</p>
+<pre><code>
+.EQ
+gamma = { G M } over { r sup 2 }
+.EN
+</pre></code>
+<math><mrow><mo>&gamma;</mo><mo>&equals;</mo><mfrac><mrow><mi>G</mi><mi>M</mi></mrow><msup><mi>r</mi><mn>2</mn></msup></mfrac></mrow></math>
+
+<pre><code>
+.EQ
+{ \(pd gamma } over { \(pd h } =
+{ \(pd gamma } over { \(pd r } =
+- 2 { G M } over { r sup 3 }
+.EN
+</pre></code>
+<math><mrow><mfrac><mrow><mo>&part;</mo><mo>&gamma;</mo></mrow><mrow><mo>&part;</mo><mi>h</mi></mrow></mfrac><mo>&equals;</mo><mfrac><mrow><mo>&part;</mo><mo>&gamma;</mo></mrow><mrow><mo>&part;</mo><mi>r</mi></mrow></mfrac><mo>&equals;</mo><mo>&minus;</mo><mn>2</mn><mfrac><mrow><mi>G</mi><mi>M</mi></mrow><msup><mi>r</mi><mn>3</mn></msup></mfrac></mrow></math>
+
+<pre><code>
+.EQ
+{ \(pd T } over { \(pd r } +
+2 over r T + Delta g = 0
+.EN
+</code></pre>
+<math><mrow><mfrac><mrow><mo>&part;</mo><mi>T</mi></mrow><mrow><mo>&part;</mo><mi>r</mi></mrow></mfrac><mo>&plus;</mo><mfrac><mn>2</mn><mi>r</mi></mfrac><mi>T</mi><mo>&plus;</mo><mo>&Delta;</mo><mi>g</mi><mo>&equals;</mo><mn>0</mn></mrow></math>
+
+
+<p>這樣只要有所有 geoid 上的 &Delta;g ，就能解 T 。
+然後解 N ，得到 geoid 。</p>
+<p>球諧函數各階的 cos sin 系數意義同橢球的版本：</p>
+<table>
+<thead>
+<tr>
+<th>n</th>
+<th>m</th>
+<th>Cnm &times; E-6</th>
+<th>Cnm &times; E-6</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> 2</td>
+<td>0</td>
+<td>-484165.14</td>
+<td>1.38</td>
+</tr>
+<tr>
+<td> 2</td>
+<td>1</td>
+<td>-0.21</td>
+<td>1.38</td>
+</tr>
+<tr>
+<td> 2</td>
+<td>2</td>
+<td>2439.38</td>
+<td>-1400.27</td>
+</tr>
+<tr>
+<td> 3</td>
+<td>0</td>
+<td>957.16</td>
+<td>0</td>
+</tr>
+<tr>
+<td> 3</td>
+<td>1</td>
+<td>2029.22</td>
+<td>248.20</td>
+</tr>
+<tr>
+<td> 3</td>
+<td>2</td>
+<td>904.79</td>
+<td>-619.01</td>
+</tr>
+<tr>
+<td> 3</td>
+<td>3</td>
+<td>721.32</td>
+<td>1414.35</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>C00 是橢球質量，在參考球上為 0 。</li>
+<li>C01 C10 S10 是質心與原點偏差，
+在參考球上為 0 。</li>
+<li>C20 是地球扁率，所以很大。</li>
+<li>C21 與 S21 是與地球自轉軸的重合有關，所以也很小。</li>
+</ul>
+<h2>無限寛廣的海洋</h2>
+<p>假設你於一個無限寬廣的海水面上測量重力，假設儀器分別位於船上和固定柱上，儀器到海水面距離為零，船上和固定柱上儀器至水面距離為零，此時水面突然上升2公尺，請問此時重力儀上的重力讀數分別變化多少? (記得單位和正負號)?
+需解釋變化原因及並列出計算過程</p>
+<p>因為水面上升了 2m ，我們離原始海水遠了 2m ，
+可以視為反向的自由空間約化。</p>
+<p>F &asymp; 0.3086 H = - 0.6172 mgals</p>
+<p>g&#39; = g + F = g - 0.6172</p>
+<p>此時我們是懸在空中，離海面 2m ，
+還得要把這 2m 填滿海水，
+可以視為反向的布格平板改正。</p>
+<p>A = 2 &pi; G &rho; H = 2 &pi; &times; 0.0066732 H = 0.0419101123</p>
+<p>g&#39;&#39; = g&#39; + A = g - 0.6172 + 0.041910 = g + 0.659110 (gal)</p>
+<p>蠻有趣的，海水面上升，雖然質量增加，
+但因為離地球更遠，增加質量不比遠離地球的效益，
+重力反而減小了。</p>
+<h2>重力約化</h2>
+<p>請詳細說明如何求得Free-air anomaly、Bouguer anomaly、Faye anomaly 、Isostatic anomaly(各種重力約化需說明)。若一點位(緯度：18.543度; 經度:118.554度，正高20.321公尺)之觀測絕對重力值為9.8232542 m/s^2，請問該點在大地水準面對應點之Free-air anomaly和Bouguer anomaly為何?</p>
+<ol>
+<li>中文名詞定義，說明各約化過程並列式</li>
+<li>需列出計算過程</li>
+</ol>
+<p>重力異常 = 實際重力 - 橢球上正常重力</p>
+<p>橢球上正常重力 &gamma; = 9.7803267715 &times; (1 + 0.0052790414 &times; sin (&phi;) ^ 2 + 0.0000232718 &times; sin (&phi;) ^ 4 + 0.0000001262 &times; sin (&phi;) ^ 6 + 0.0000000007 &times; sin (&phi;) ^ 8) = 978.5546 (gal)</p>
+<h3>free-air anomaly</h3>
+<p>自由空間約化，將近地表一點在垂直方向移動，
+靠近或遠離地心 H 後重力的變化。
+且這個移動不能造成質量從點的上方移動下方，或反之；
+可以想像成點是在空中移動。</p>
+<p>由於移動的尺度相對離地球質心的距離很小，
+可以視為重力梯度不變，也就是可以線性近似。</p>
+<pre><code>
+.EQ
+F ~=
+{ \(pd gamma } over { \(pd H } H ~=
+0.3086 H mgals
+.EN
+</code></pre>
+<math><mrow><mi>F</mi><mtext>&ensp;</mtext><mo>&equals;</mo><mfrac><mrow><mo>&part;</mo><mo>&gamma;</mo></mrow><mrow><mo>&part;</mo><mi>H</mi></mrow></mfrac><mi>H</mi><mtext>&ensp;</mtext><mo>&equals;</mo><mn>0</mn><mo>.</mo><mn>3</mn><mn>0</mn><mn>8</mn><mn>6</mn><mi>H</mi><mi>m</mi><mi>g</mi><mi>a</mi><mi>l</mi><mi>s</mi></mrow></math>
+
+<p>g&#39; = g - F = 982.32542 - 0.3086 * 20.321 / 1000 = 982.319 (gal)</p>
+<p>&Delta; g = g&#39; - &gamma; = 3.764</p>
+<h3>Bouguer anomaly</h3>
+<p>布格平板改正，將近一點以下厚度 H 的均勻質量柱體移除，
+並將點垂直移動 -H 。
+布格平板是很扁的圓柱體，像一塊平板，
+半徑 a 高度 b 密度 &rho; 。</p>
+<pre><code>
+.EQ
+A sub 0 = 2 pi G rho
+( a + b -
+sqrt { a sup 2 + b sup 2 } )
+.EN
+</code></pre>
+<math><mrow><msub><mi>A</mi><mn>0</mn></msub><mo>&equals;</mo><mn>2</mn><mo>&pi;</mo><mi>G</mi><mo>&rho;</mo><mo>(</mo><mi>a</mi><mo>&plus;</mo><mi>b</mi><mo>&minus;</mo><msqrt><mrow><msup><mi>a</mi><mn>2</mn></msup><mo>&plus;</mo><msup><mi>b</mi><mn>2</mn></msup></mrow></msqrt><mo>)</mo></mrow></math>
+<p>若平板為無限寛，（和地表一樣寬。）
+則可以取極限成：</p>
+<math><mrow><munder><mstyle mathvariant='normal'><mtext>lim</mtext></mstyle><mrow><mi>a</mi><mo>&rarr;</mo><mo>&infin;</mo></mrow></munder><mn>2</mn><mo>&pi;</mo><mi>G</mi><mo>&rho;</mo><mo>(</mo><mi>a</mi><mo>&plus;</mo><mi>b</mi><mo>&minus;</mo><msqrt><mrow><msup><mi>a</mi><mn>2</mn></msup><mo>&plus;</mo><msup><mi>b</mi><mn>2</mn></msup></mrow></msqrt><mo>)</mo><mo>&equals;</mo><mn>2</mn><mo>&pi;</mo><mi>G</mi><mo>&rho;</mo><mi>b</mi></mrow></math>
+
+<p>近地表地殼密度約為 &rho; = 2.67 g/cm³ ，
+帶入後 A = 0.1119 H ，
+只改正 A 稱為不完全布格約化。
+再加上自由空間約化，
+將點移到除去平板後的位置才是完全布格</p>
+<p>A = 0.1119 H &gt; 0.3086 H = F ，
+可以發現移除後少了這一塊平板造成的變化，
+小於移動 -H 後的影響量，
+所以布格改正後重力其實是變大的。</p>
+<p>g&#39; = g - F + A = g - 0.0062710606 + 0.0022739199 = 982.3214228593</p>
+<p>&Delta; g = g&#39; - &gamma; = 3.767</p>
+<h3>Faye 約化</h3>
+<p>因為布格改正會移除太多質量，
+讓 geoid 移動過大。
+所以只做自由空間約化與地型改正，
+稱為 Faya 約化。</p>
+<p>地型改正則是把凹的填起來，
+把凸的削平，讓地表成為一個平面。</p>
+<h3>Isostatic anomaly</h3>
+<p>均衡約化是把 geoid 下的密度約化到一樣。
+這樣做布格約化時，就不會發生
+在不同密度減去相同質量的情形。</p>
+<h2>大地水準面約化</h2>
+<p>若地表 P 點量測重力為g，請問大地水準面上 P0 點重力為何？
+P至P0點的平均重力為何？需列出計算過程及答案</p>
+<p>若 P 與 P0 正高差 H ，
+計算 P0 的 g 需先將 P 做自由空間約化
+移動 H 到 P0 上：</p>
+<p>F = 0.3086 H</p>
+<p>然後原本在下方的質量移到了上方，
+所以要減去兩倍的布格平板：</p>
+<p>A = 2 &times; 0.1119 H</p>
+<p>g&#39; = g + F - A</p>
+<p>平均重力則是簡單兩點的平均：</p>
+<p>(g + g&#39;) / 2 = g + 0.0424 H</p>
 </main>
 
 <pre class="markdown raw">
@@ -39,31 +334,30 @@ Due day: 5/19/2017
 
 擾動位能滿足 Laplace Equation ，
 
-&Delta; W = &Delta; V + &Delta; &Phi; = 0 + 2 &omega; <sup>2</sup>
+&amp;Delta; W = &amp;Delta; V + &amp;Delta; &amp;Phi; = 0 + 2 &amp;omega; &lt;sup&gt;2&lt;/sup&gt;
 
-&Delta; U = &Delta; V <sub>E</sub> +
-&Delta; &Phi; <sub>E</sub> = 0 + 2 &omega; <sup>2</sup>
+&amp;Delta; U = &amp;Delta; V &lt;sub&gt;E&lt;/sub&gt; +
+&amp;Delta; &amp;Phi; &lt;sub&gt;E&lt;/sub&gt; = 0 + 2 &amp;omega; &lt;sup&gt;2&lt;/sup&gt;
 
 由於橢球自轉速率與實際地球自轉速率幾乎相同，
-&Phi; <sub>E</sub> ≒ &Phi; 。
+&amp;Phi; &lt;sub&gt;E&lt;/sub&gt; ≒ &amp;Phi; 。
 
 且正常引力位與引力位也滿足
-&Delta; V = &Delta; V <sub>E</sub> = 0
+&amp;Delta; V = &amp;Delta; V &lt;sub&gt;E&lt;/sub&gt; = 0
 
 故
-&Delta; T = &Delta; ( W - U ) =
-&Delta; ( V + &Phi; - V <sub>E</sub> - &Phi;<sub>E</sub> ) = 
-&Delta; V - &Delta; V <sub>E</sub> =
+&amp;Delta; T = &amp;Delta; ( W - U ) =
+&amp;Delta; ( V + &amp;Phi; - V &lt;sub&gt;E&lt;/sub&gt; - &amp;Phi;&lt;sub&gt;E&lt;/sub&gt; ) = 
+&amp;Delta; V - &amp;Delta; V &lt;sub&gt;E&lt;/sub&gt; =
 0 - 0 = 0
 
-    .EQ
-    T ( r , theta , lambda ) =
-    Sum from n = 0 to infinity
-    ( R over r ) sup { n + 1 }
-    T sub n ( theta , lambda )
-    .EN
+.EQ
+T ( r , theta , lambda ) =
+sum from { n = 0 } to \(if
+( R over r ) sup { n + 1 }
+T sub n ( theta , lambda )
+.EN
 
-<math><mrow><mi>T</mi><mo>(</mo><mi>r</mi><mo>,</mo><mo>&theta;</mo><mo>,</mo><mo>&lambda;</mo><mo>)</mo><mo>&equals;</mo><munder><mrow><mi>S</mi><mi>u</mi><mi>m</mi></mrow><mi>n</mi></munder><mo>&equals;</mo><mover><mn>0</mn><mrow><mi>i</mi><mi>n</mi><mi>f</mi><mi>i</mi><mi>n</mi><mi>i</mi><mi>t</mi><mi>y</mi></mrow></mover><mo>(</mo><mfrac><mi>R</mi><mi>r</mi></mfrac><msup><mo>)</mo><mrow><mi>n</mi><mo>&plus;</mo><mn>1</mn></mrow></msup><msub><mi>T</mi><mi>n</mi></msub><mo>(</mo><mo>&theta;</mo><mo>,</mo><mo>&lamda;</mo><mo>)</mo></mrow></math>
 
 擾動位為實際重力位與正常重力位的相減，
 各階的 cos sin 系數也是。
@@ -84,8 +378,6 @@ Due day: 5/19/2017
     delta vec g = vec { g sub p } - vec { gamma sub p }
     .EN
 
-<math><mrow><mover accent='true'><mo>&delta;</mo><mo>&rarr;</mo></mover><mi>g</mi><mover accent='true'><mo>&equals;</mo><mo>&rarr;</mo></mover><msub><mi>g</mi><mi>p</mi></msub><mover accent='true'><mo>&minus;</mo><mo>&rarr;</mo></mover><msub><mo>&gamma;</mo><mi>p</mi></msub></mrow></math>
-
 一般重力擾動的計算較困難，
 因為要計算不在橢球上的重力加速度，
 再與實際測得的重力加速度相減。
@@ -97,12 +389,12 @@ Due day: 5/19/2017
 也是一個向量，因為角度不會差太多，
 所以常表示為純量。
 
-.EQ
-Delta vec g = vec g sub P - vec gamma sub Q
-.EN
+    .EQ
+    Delta vec g = vec g sub P - vec gamma sub Q
+    .EN
 
-可以用重力加速度儀在地面測得 g <sub>P</sub> ，
-再用大地橢球算得 &gamma; <sub>Q</sub> ，
+可以用重力加速度儀在地面測得 g &lt;sub&gt;P&lt;/sub&gt; ，
+再用大地橢球算得 &amp;gamma; &lt;sub&gt;Q&lt;/sub&gt; ，
 相減即是重力異常。
 
 ### 大地起伏
@@ -136,23 +428,21 @@ Delta vec g = vec g sub P - vec gamma sub Q
 擾動位能的球近似
 ----------------
 
-.EQ
-{ \(pd T sub P } over
-{ \(pd h } -
-{ T sub P } over { gamma sub Q }
-{ \(pd gamma } over
-{ \(pd h } | sub Q +
-Delta g sub P = 0
-.EN
-
-<math><mrow><mfrac><mrow><mo>&part;</mo><msub><mi>T</mi><mi>P</mi></msub></mrow><mrow><mo>&part;</mo><mi>h</mi></mrow></mfrac><mo>&minus;</mo><mfrac><msub><mi>T</mi><mi>P</mi></msub><msub><mo>&gamma;</mo><mi>Q</mi></msub></mfrac><mfrac><mrow><mo>&part;</mo><mo>&gamma;</mo></mrow><mrow><mo>&part;</mo><mi>h</mi></mrow></mfrac><msub><mi>|</mi><mi>Q</mi></msub><mo>&plus;</mo><mo>&Delta;</mo><msub><mi>g</mi><mi>P</mi></msub><mo>&equals;</mo><mn>0</mn></mrow></math>
+    .EQ
+    { \(pd T sub P } over
+    { \(pd h } -
+    { T sub P } over { gamma sub Q }
+    { \(pd gamma } over
+    { \(pd h } | sub Q +
+    Delta g sub P = 0
+    .EN
 
 請詳細此公式之意義，並說明此公式之球近似。
 並解釋各參數的定義、公式意義。
 
 此公式將觀測得的地表實際重力，
 與擾動位關連。但由於是微分方程，
-要有整個空間所有點的 &Delta;g 才能求解 T 。
+要有整個空間所有點的 &amp;Delta;g 才能求解 T 。
 
 由於大地橢球與球的誤差約只有 1/300 ，
 而擾動位相比重力位很小。
@@ -160,27 +450,27 @@ Delta g sub P = 0
 但重力異常 9.8... - 9.8... = 0.0... 的 1/300 就很小。
 所以可以用球近似簡化：
 
-.EQ
-gamma = { G M } over { r sup 2 }
-.EN
+    .EQ
+    gamma = { G M } over { r sup 2 }
+    .EN
 
-.EQ
-{ part gamma } over { part h } =
-{ part gamma } over { part r } =
-- 2 { G M } over { r sup 3 }
-.EN
+    .EQ
+    { \(pd gamma } over { \(pd h } =
+    { \(pd gamma } over { \(pd r } =
+    - 2 { G M } over { r sup 3 }
+    .EN
 
-.EQ
-{ part T } over { part r } +
-2 over r T + Delta g = 0
-.EN
+    .EQ
+    { \(pd T } over { \(pd r } +
+    2 over r T + Delta g = 0
+    .EN
 
-這樣只要有所有 geoid 上的 &Delta;g ，就能解 T 。
+這樣只要有所有 geoid 上的 &amp;Delta;g ，就能解 T 。
 然後解 N ，得到 geoid 。
 
 球諧函數各階的 cos sin 系數意義同橢球的版本：
 
- n | m | Cnm &times; E-6 | Cnm &times; E-6
+ n | m | Cnm &amp;times; E-6 | Cnm &amp;times; E-6
 ---|---|-----------------|----------------
  2 | 0 | -484165.14 | 1.38
  2 | 1 | -0.21 | 1.38
@@ -205,7 +495,7 @@ gamma = { G M } over { r sup 2 }
 因為水面上升了 2m ，我們離原始海水遠了 2m ，
 可以視為反向的自由空間約化。
 
-F &asymp; 0.3086 H = - 0.6172 mgals
+F &amp;asymp; 0.3086 H = - 0.6172 mgals
 
 g' = g + F = g - 0.6172
 
@@ -213,7 +503,7 @@ g' = g + F = g - 0.6172
 還得要把這 2m 填滿海水，
 可以視為反向的布格平板改正。
 
-A = 2 &pi; G &rho; H = 2 &pi; &times; 0.0066732 H = 0.0419101123
+A = 2 &amp;pi; G &amp;rho; H = 2 &amp;pi; &amp;times; 0.0066732 H = 0.0419101123
 
 g'' = g' + A = g - 0.6172 + 0.041910 = g + 0.659110 (gal)
 
@@ -230,7 +520,7 @@ g'' = g' + A = g - 0.6172 + 0.041910 = g + 0.659110 (gal)
 
 重力異常 = 實際重力 - 橢球上正常重力
 
-橢球上正常重力 &gamma; = 9.7803267715 &times; (1 + 0.0052790414 &times; sin (&phi;) ^ 2 + 0.0000232718 &times; sin (&phi;) ^ 4 + 0.0000001262 &times; sin (&phi;) ^ 6 + 0.0000000007 &times; sin (&phi;) ^ 8) = 978.5546 (gal)
+橢球上正常重力 &amp;gamma; = 9.7803267715 &amp;times; (1 + 0.0052790414 &amp;times; sin (&amp;phi;) ^ 2 + 0.0000232718 &amp;times; sin (&amp;phi;) ^ 4 + 0.0000001262 &amp;times; sin (&amp;phi;) ^ 6 + 0.0000000007 &amp;times; sin (&amp;phi;) ^ 8) = 978.5546 (gal)
 
 
 ### free-air anomaly
@@ -242,21 +532,21 @@ g'' = g' + A = g - 0.6172 + 0.041910 = g + 0.659110 (gal)
 由於移動的尺度相對離地球質心的距離很小，
 可以視為重力梯度不變，也就是可以線性近似。
 
-.EQ
-F ~=
-{ part gamma } over { part H } H ~=
-0.3086 H mgals
-.EN
+    .EQ
+    F ~=
+    { \(pd gamma } over { \(pd H } H ~=
+    0.3086 H mgals
+    .EN
 
 g' = g - F = 982.32542 - 0.3086 * 20.321 / 1000 = 982.319 (gal)
 
-&Delta; g = g' - &gamma; = 3.764
+&amp;Delta; g = g' - &amp;gamma; = 3.764
 
 ### Bouguer anomaly
 布格平板改正，將近一點以下厚度 H 的均勻質量柱體移除，
 並將點垂直移動 -H 。
 布格平板是很扁的圓柱體，像一塊平板，
-半徑 a 高度 b 密度 &rho; 。
+半徑 a 高度 b 密度 &amp;rho; 。
 
 .EQ
 A sub 0 = 2 pi G rho
@@ -267,27 +557,27 @@ sqrt { a sup 2 + b sup 2 } )
 若平板為無限寛，（和地表一樣寬。）
 則可以取極限成：
 
-.EQ
-lim from { a -> infinity }
-2 pi G rho ( a + b -
-sqrt { a sup 2 + b sup 2 } ) =
-2 pi G rho b
-.EN
+    .EQ
+    lim from { a -&gt; \(if }
+    2 pi G rho ( a + b -
+    sqrt { a sup 2 + b sup 2 } ) =
+    2 pi G rho b
+    .EN
 
-近地表地殼密度約為 &rho; = 2.67 g/cm³ ，
+近地表地殼密度約為 &amp;rho; = 2.67 g/cm³ ，
 帶入後 A = 0.1119 H ，
 只改正 A 稱為不完全布格約化。
 再加上自由空間約化，
 將點移到除去平板後的位置才是完全布格
 
-A = 0.1119 H > 0.3086 H = F ，
+A = 0.1119 H &gt; 0.3086 H = F ，
 可以發現移除後少了這一塊平板造成的變化，
 小於移動 -H 後的影響量，
 所以布格改正後重力其實是變大的。
 
 g' = g - F + A = g - 0.0062710606 + 0.0022739199 = 982.3214228593
 
-&Delta; g = g' - &gamma; = 3.767
+&amp;Delta; g = g' - &amp;gamma; = 3.767
 
 ### Faye 約化
 因為布格改正會移除太多質量，
@@ -317,7 +607,7 @@ F = 0.3086 H
 然後原本在下方的質量移到了上方，
 所以要減去兩倍的布格平板：
 
-A = 2 &times; 0.1119 H
+A = 2 &amp;times; 0.1119 H
 
 g' = g + F - A
 
@@ -335,6 +625,7 @@ g' = g + F - A
 
 
 </pre>
+
 
 <footer></footer>
 <script src="https://gholk.github.io/ext/luser-meta.js" defer></script>
