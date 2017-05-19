@@ -1,15 +1,5 @@
 
-var colinearitySolverGenerator
-
-if (typeof window == 'object') {
-    colinearitySolverGenerator = window.colinearitySolverGenerat
-}
-else if (typeof require == 'function') {
-    colinearitySolverGenerator = require('colinearitySolverGenerator')
-}
-else {
-    throw new Error("can not load colinearitySolverGenerator")
-}
+var ColinearityEquation = require('colinearityEquation')
 
 var vector = require('vector')
 
@@ -19,6 +9,9 @@ var iop = [
     -0.0169,  // yp
     3.9845  // c
 ]
+
+iop.k = [-6.9954e-03, 7.7051e-04, -7.5490e-51]
+iop.p = [0,0]
 
 // exterior oriental parameter different for every photo. 
 var eops = {
@@ -424,20 +417,23 @@ var points = {
 var pointsInPhoto = {}
 
 // photo size
-photoSize = [3328, 1872].map(function(s){ return s * 0.0000014 / 2 })
+photoSize = [3328, 1872].map(function(s){ return s * 0.0014 / 2 })
 
 // object save colinearity solver for each photo. 
 var solvers = {}
 
 for (var i in eops) {
-    solvers[i] = colinearitySolverGenerator(eops[i], iop)
+    solvers[i] = new ColinearityEquation(eops[i], iop)
     pointsInPhoto[i] = {}
     for (var j in points) {
         // equal to solvers[i](points[j][0], points[j][1], points[j][2])
-        var vec = solvers[i].apply(this,points[j])
+        var vec = solvers[i].groundToPhoto(points[j])
 
         // test if point inside photo. 
-        if (vec[0] <= photoSize[0] && vec[1] <= photoSize[1]) {
+        if (
+            Math.abs(vec[0]) <= photoSize[0] &&
+            Math.abs(vec[1]) <= photoSize[1]
+        ) {
             pointsInPhoto[i][j] = vec
         }
     }
@@ -460,6 +456,7 @@ function createIcfStructure(data) {
         return row.split(/\s+/g)
     }).reduce(function(structure, row){
         structure[row[0]] = row.slice(1).map(Number)
+        return structure
     },structure)
     return structure
 }
