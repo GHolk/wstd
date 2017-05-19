@@ -1,26 +1,27 @@
-plot 'IMG_20170329_142042.err' using 5:6 title 'IMG_20170329_142042.err', \
-'IMG_20170329_142058.err' using 5:6 title 'IMG_20170329_142058.err', \
-'IMG_20170329_142125.err' using 5:6 title 'IMG_20170329_142125.err', \
-'IMG_20170329_142211.err' using 5:6 title 'IMG_20170329_142211.err', \
-'IMG_20170329_142226.err' using 5:6 title 'IMG_20170329_142226.err', \
-'IMG_20170329_142240.err' using 5:6 title 'IMG_20170329_142240.err', \
-'IMG_20170329_142246.err' using 5:6 title 'IMG_20170329_142246.err', \
-'IMG_20170329_142256.err' using 5:6 title 'IMG_20170329_142256.err', \
-'IMG_20170329_142310.err' using 5:6 title 'IMG_20170329_142310.err', \
-'IMG_20170329_142320.err' using 5:6 title 'IMG_20170329_142320.err', \
-'IMG_20170329_142351.err' using 5:6 title 'IMG_20170329_142351.err', \
-'IMG_20170329_142410.err' using 5:6 title 'IMG_20170329_142410.err', \
-'IMG_20170329_142420.err' using 5:6 title 'IMG_20170329_142420.err', \
-'IMG_20170329_142427.err' using 5:6 title 'IMG_20170329_142427.err', \
-'IMG_20170329_142538.err' using 5:6 title 'IMG_20170329_142538.err', \
-'IMG_20170329_142549.err' using 5:6 title 'IMG_20170329_142549.err', \
-'IMG_20170329_142559.err' using 5:6 title 'IMG_20170329_142559.err', \
-'IMG_20170329_142609.err' using 5:6 title 'IMG_20170329_142609.err', \
-'IMG_20170329_142617.err' using 5:6 title 'IMG_20170329_142617.err', \
-'IMG_20170329_142631.err' using 5:6 title 'IMG_20170329_142631.err', \
-'IMG_20170329_142643.err' using 5:6 title 'IMG_20170329_142643.err', \
-'IMG_20170329_142700.err' using 5:6 title 'IMG_20170329_142700.err', \
-'IMG_20170329_142713.err' using 5:6 title 'IMG_20170329_142713.err', \
-'IMG_20170329_142724.err' using 5:6 title 'IMG_20170329_142724.err', \
-'IMG_20170329_142739.err' using 5:6 title 'IMG_20170329_142739.err', \
-'IMG_20170329_142744.err' using 5:6 title 'IMG_20170329_142744.err'
+plot \
+'IMG_20170329_142042.err' using 2:3:5:6 with vectors title 'IMG_20170329_142042.err', \
+'IMG_20170329_142058.err' using 2:3:5:6 with vectors title 'IMG_20170329_142058.err', \
+'IMG_20170329_142125.err' using 2:3:5:6 with vectors title 'IMG_20170329_142125.err', \
+'IMG_20170329_142211.err' using 2:3:5:6 with vectors title 'IMG_20170329_142211.err', \
+'IMG_20170329_142226.err' using 2:3:5:6 with vectors title 'IMG_20170329_142226.err', \
+'IMG_20170329_142240.err' using 2:3:5:6 with vectors title 'IMG_20170329_142240.err', \
+'IMG_20170329_142246.err' using 2:3:5:6 with vectors title 'IMG_20170329_142246.err', \
+'IMG_20170329_142256.err' using 2:3:5:6 with vectors title 'IMG_20170329_142256.err', \
+'IMG_20170329_142310.err' using 2:3:5:6 with vectors title 'IMG_20170329_142310.err', \
+'IMG_20170329_142320.err' using 2:3:5:6 with vectors title 'IMG_20170329_142320.err', \
+'IMG_20170329_142351.err' using 2:3:5:6 with vectors title 'IMG_20170329_142351.err', \
+'IMG_20170329_142410.err' using 2:3:5:6 with vectors title 'IMG_20170329_142410.err', \
+'IMG_20170329_142420.err' using 2:3:5:6 with vectors title 'IMG_20170329_142420.err', \
+'IMG_20170329_142427.err' using 2:3:5:6 with vectors title 'IMG_20170329_142427.err', \
+'IMG_20170329_142538.err' using 2:3:5:6 with vectors title 'IMG_20170329_142538.err', \
+'IMG_20170329_142549.err' using 2:3:5:6 with vectors title 'IMG_20170329_142549.err', \
+'IMG_20170329_142559.err' using 2:3:5:6 with vectors title 'IMG_20170329_142559.err', \
+'IMG_20170329_142609.err' using 2:3:5:6 with vectors title 'IMG_20170329_142609.err', \
+'IMG_20170329_142617.err' using 2:3:5:6 with vectors title 'IMG_20170329_142617.err', \
+'IMG_20170329_142631.err' using 2:3:5:6 with vectors title 'IMG_20170329_142631.err', \
+'IMG_20170329_142643.err' using 2:3:5:6 with vectors title 'IMG_20170329_142643.err', \
+'IMG_20170329_142700.err' using 2:3:5:6 with vectors title 'IMG_20170329_142700.err', \
+'IMG_20170329_142713.err' using 2:3:5:6 with vectors title 'IMG_20170329_142713.err', \
+'IMG_20170329_142724.err' using 2:3:5:6 with vectors title 'IMG_20170329_142724.err', \
+'IMG_20170329_142739.err' using 2:3:5:6 with vectors title 'IMG_20170329_142739.err', \
+'IMG_20170329_142744.err' using 2:3:5:6 with vectors title 'IMG_20170329_142744.err'
