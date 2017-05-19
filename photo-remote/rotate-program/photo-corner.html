@@ -1,0 +1,438 @@
+<!DOCTYPE HTML>
+<html lang="zh-TW" prefix="og: http://ogp.me/ns#">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="UTF-8">
+<meta name="author" property="og:article:author" content="c34031328">
+<meta name="copyright" content="Common Creative, by c34031328">
+<meta name="generator" content="vim, markdown">
+<!-- 以上一般不用改，以下才要改。 -->
+
+<!-- 後設資料 -->
+<meta name="date" property="og:article:public_time" content="2017-05-12"> 
+<meta name="keywords" property="og:article:tag" content="共線式,top-down,javascript,coffee-script">
+
+<!-- 和網頁位置有關 -->
+<link rel="stylesheet" type="text/css" href="https://gholk.github.io/ext/word.css">
+<link href="https://cdn.bootcss.com/highlight.js/8.0/styles/tomorrow.min.css" rel="stylesheet">
+
+<title>計算照片四角在地面座標</title>
+</head>
+<body>
+<main>
+<h2>計算照片四角在地面座標</h2>
+<p>共線式連結像空間座標與物空間座標，
+此次作業要算出像空間的四個角在物空間中的座標。
+因為物空間是三維，多像空間一個未知數，會無法求解。
+此次假設像空間該點的 Z 座標為 0 ，才能求解。</p>
+<h2>理論</h2>
+<p>共線式展開後是兩條方程式，
+也就是像空間 x y z 與物空間 X Y Z
+必須有四個已知，才能求解另外二個。
+因為像空間中所有點都在 xy 平面上，
+z 座標固定為 0 ，
+因此能用物空間座標 X Y Z 反算像空間 x y 。</p>
+<p>若已知道像空間 x y 欲求物空間，
+則 X Y Z 至少還要知道一個。
+常用手法是套 DTM ，
+如果該點在地表，即可得知高程 Z 。
+這樣未知數只剩 X Y 。</p>
+<h2>程式</h2>
+<p>程式一樣寫成可以被引用的套件，
+<a href="https://gholk.github.io/wstd/photo-remote/rotate-program/node_modules/colinearityEquation.js">可以被引用的套件</a> ，
+輸入內外方位參數，即可使用。</p>
+<pre><code class="language-coffeescript">switch
+# load matrix and vector module
+    when require
+        vector = require &#39;vector&#39;
+        matrix = require &#39;matrix&#39;
+        rotateMatrix = require &#39;rotateMatrix&#39;
+    when window
+        vector = window.vector
+        matrix = window.matrix
+        rotateMatrix = rotateMatrix
+
+
+class ColinearityEquation
+    constructor: (parameter, interiorOrientalParameter) -&gt;
+        # [xa - xp] = scale * M * [Xp - Xo]
+
+        {c,xp,yp, omega,phi,kappa, xo,yo,zo} = parameter
+
+        # compute rotate matrix from ground to image. 
+        # spaceToPhotoMatrix = M
+        @groundToPhotoMatrix = rotateMatrix.wfk omega, phi, kappa
+        @photoToGroundMatrix = @groundToPhotoMatrix.transpose()
+
+        # camera position vector in ground system.
+        # cameraVector = Xo
+        @cameraInSpaceVector = vector.createFromArray [xo,yo,zo]
+
+        @cameraToPhotoVector =
+            interiorOrientalParameter || vector.createFromArray [xp,yp,c]
+
+
+    # function find photo xy by ground xyz
+    # @param {number} ground x
+    # @param {number} ground y
+    # @param {number} ground z
+    # @return {vector} [x,y,z] in vector object, 
+    #   vector is a array like object defined in vector module.
+    groundToPhoto: (groundPointVector) -&gt;
+        if ! groundPointVector instanceof vector.create
+            groundPointVector = vector.createFromArray groundPointVector
+
+        unScaleVector = @groundToPhotoMatrix
+            .multiply groundPointVector.minus @cameraInSpaceVector
+
+        # solve the scala factor by focus
+        scale = - @cameraToPhotoVector[2] / unScaleVector[2]
+
+        # scale unScaleVector
+        unScaleVector
+            .multiply scale
+            .add @cameraToPhotoVector
+
+    photoToGround: (
+        photoPoint
+        groundPointVector = vector.createFromArray [NaN, NaN, 0]
+    ) -&gt;
+        photoPointVector = if photoPoint instanceof vector.create
+        then photoPoint
+        else vector.createFromArray photoPoint
+
+        unScaleVector = @photoToGroundMatrix.multiply(
+            photoPointVector
+                .minus @cameraToPhotoVector
+                .multiply -1
+        )
+
+        cameraToPointInGroundVector =
+            groundPointVector.minus @cameraInSpaceVector
+
+        scale = unScaleVector.reduce(
+            (s,x,i,m) -&gt;
+                if s
+                then s
+                else x / cameraToPointInGroundVector[i]
+            NaN
+        )
+
+        return unScaleVector
+            .multiply 1/scale
+            .add @cameraInSpaceVector
+
+
+# export modules
+switch
+    when module &amp;&amp; module.exports
+        module.exports = ColinearityEquation
+    when exports
+        exports.ColinearityEquation = ColinearityEquation
+    when window
+        window.ColinearityEquation = ColinearityEquation
+</code></pre><h2>計算四角地面點座標</h2>
+<p>此次選中一張近垂直攝影的照片，做為解算目標。</p>
+<p><a data-flickr-embed="true"  href="https://www.flickr.com/photos/135370742@N08/34571045466/in/dateposted-public/" title="IMG_20170329_142125"><img src="https://c1.staticflickr.com/5/4163/34571045466_5b31487dcf_b.jpg" alt="IMG_20170329_142125"></a><script async src="//embedr.flickr.com/assets/client-code.js" charset="utf-8"></script></p>
+<pre><code class="language-javascript">// 引用寫好的函式庫
+var ColinearityEquation = require(&#39;colinearityEquation&#39;)
+
+// 外方位參數
+var eop = {
+    // 相機在物空間座標
+    xo: -60.7716,
+    yo: 54.6448,
+    zo: 568.3118,
+
+    // 相機在物空間族轉角，
+    // 其中 x y 軸接近 90°
+    omega:0.0760,
+    phi:-0.0883,
+    kappa:-0.2558 
+}
+
+// 內方位參數
+var iop = [
+     0.041933,  // xp
+     -0.016958,  // yp
+     3.984584  // c
+]
+
+// 有了內外方位參數的共線式物件
+var ceqn = new ColinearityEquation(eop, iop)
+
+var pixelSize = 0.0014*1000,  // 單位 um
+    width = 3328,  // 單位像素
+    height = 1872
+
+// 四個角的像空間座標
+var pointsInPhoto = [
+    [width/2, height/2, 0],
+    [-width/2, height/2, 0],
+    [width/2, -height/2, 0],
+    [-width/2, -height/2, 0]
+]
+
+// 把像空間座標的陣列每個元素，
+// 作為函數 ceqn.photoToGround 的參數，
+// 結果再放進 pointsInGround 陣列。
+var pointsInGround = pointsInPhoto.map(
+function photoToGround(point) {
+    return ceqn.photoToGround(point)
+})
+
+// 顯示出結果
+console.log(pointsInGround.join(&#39;\n&#39;))
+</code></pre><table>
+<thead>
+<tr>
+<th>X</th>
+<th>Y</th>
+<th>Z</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>264.94611896620967</td>
+<td>175.4693777826725</td>
+<td>0</td>
+</tr>
+<tr>
+<td>-211.09793536035852</td>
+<td>291.82108632733224</td>
+<td>0</td>
+</tr>
+<tr>
+<td>182.05429243562483</td>
+<td>-90.13272484313029</td>
+<td>0</td>
+</tr>
+<tr>
+<td>-269.1081529765974</td>
+<td>35.20632612336624</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<h2>計算 GSD</h2>
+<p>像比例尺 = h / c = 568.3118 / 3.984584 = 142.6276369126614</p>
+<p>空間解析度 = pixel_size * 像比例尺 = 0.0014 * 142.6276369126614 = 0.19967869167772595mm</p>
+<p>GSD = 0.2mm</p>
+<h2>地面 GSD</h2>
+<h3>X 軸方向</h3>
+<p>(264.94611896620967 + 269.1081529765974) / GSD = 2670</p>
+<h3>Y 軸方向</h3>
+<p>(291.82108632733224 + 90.13272484313029) / GSD = 1910</p>
+</main>
+
+<pre class="markdown raw">
+計算照片四角在地面座標
+----------------------
+共線式連結像空間座標與物空間座標，
+此次作業要算出像空間的四個角在物空間中的座標。
+因為物空間是三維，多像空間一個未知數，會無法求解。
+此次假設像空間該點的 Z 座標為 0 ，才能求解。
+
+理論
+----
+共線式展開後是兩條方程式，
+也就是像空間 x y z 與物空間 X Y Z
+必須有四個已知，才能求解另外二個。
+因為像空間中所有點都在 xy 平面上，
+z 座標固定為 0 ，
+因此能用物空間座標 X Y Z 反算像空間 x y 。
+
+若已知道像空間 x y 欲求物空間，
+則 X Y Z 至少還要知道一個。
+常用手法是套 DTM ，
+如果該點在地表，即可得知高程 Z 。
+這樣未知數只剩 X Y 。
+
+程式
+----
+程式一樣寫成
+[可以被引用的套件](node_modules/colinearityEquation.js) ，
+輸入內外方位參數，即可使用。
+
+    switch
+    # load matrix and vector module
+        when require
+            vector = require 'vector'
+            matrix = require 'matrix'
+            rotateMatrix = require 'rotateMatrix'
+        when window
+            vector = window.vector
+            matrix = window.matrix
+            rotateMatrix = rotateMatrix
+    
+    
+    class ColinearityEquation
+        constructor: (parameter, interiorOrientalParameter) -&gt;
+            # [xa - xp] = scale * M * [Xp - Xo]
+    
+            {c,xp,yp, omega,phi,kappa, xo,yo,zo} = parameter
+    
+            # compute rotate matrix from ground to image. 
+            # spaceToPhotoMatrix = M
+            @groundToPhotoMatrix = rotateMatrix.wfk omega, phi, kappa
+            @photoToGroundMatrix = @groundToPhotoMatrix.transpose()
+    
+            # camera position vector in ground system.
+            # cameraVector = Xo
+            @cameraInSpaceVector = vector.createFromArray [xo,yo,zo]
+    
+            @cameraToPhotoVector =
+                interiorOrientalParameter || vector.createFromArray [xp,yp,c]
+    
+    
+        # function find photo xy by ground xyz
+        # @param {number} ground x
+        # @param {number} ground y
+        # @param {number} ground z
+        # @return {vector} [x,y,z] in vector object, 
+        #   vector is a array like object defined in vector module.
+        groundToPhoto: (groundPointVector) -&gt;
+            if ! groundPointVector instanceof vector.create
+                groundPointVector = vector.createFromArray groundPointVector
+    
+            unScaleVector = @groundToPhotoMatrix
+                .multiply groundPointVector.minus @cameraInSpaceVector
+    
+            # solve the scala factor by focus
+            scale = - @cameraToPhotoVector[2] / unScaleVector[2]
+    
+            # scale unScaleVector
+            unScaleVector
+                .multiply scale
+                .add @cameraToPhotoVector
+    
+        photoToGround: (
+            photoPoint
+            groundPointVector = vector.createFromArray [NaN, NaN, 0]
+        ) -&gt;
+            photoPointVector = if photoPoint instanceof vector.create
+            then photoPoint
+            else vector.createFromArray photoPoint
+    
+            unScaleVector = @photoToGroundMatrix.multiply(
+                photoPointVector
+                    .minus @cameraToPhotoVector
+                    .multiply -1
+            )
+    
+            cameraToPointInGroundVector =
+                groundPointVector.minus @cameraInSpaceVector
+    
+            scale = unScaleVector.reduce(
+                (s,x,i,m) -&gt;
+                    if s
+                    then s
+                    else x / cameraToPointInGroundVector[i]
+                NaN
+            )
+    
+            return unScaleVector
+                .multiply 1/scale
+                .add @cameraInSpaceVector
+    
+    
+    # export modules
+    switch
+        when module &amp;&amp; module.exports
+            module.exports = ColinearityEquation
+        when exports
+            exports.ColinearityEquation = ColinearityEquation
+        when window
+            window.ColinearityEquation = ColinearityEquation
+
+
+計算四角地面點座標
+------------------
+此次選中一張近垂直攝影的照片，做為解算目標。
+
+&lt;a data-flickr-embed="true"  href="https://www.flickr.com/photos/135370742@N08/34571045466/in/dateposted-public/" title="IMG_20170329_142125"&gt;&lt;img src="https://c1.staticflickr.com/5/4163/34571045466_5b31487dcf_b.jpg" width="1024" height="576" alt="IMG_20170329_142125"&gt;&lt;/a&gt;&lt;script async src="//embedr.flickr.com/assets/client-code.js" charset="utf-8"&gt;&lt;/script&gt;
+
+    // 引用寫好的函式庫
+    var ColinearityEquation = require('colinearityEquation')
+
+    // 外方位參數
+    var eop = {
+        // 相機在物空間座標
+        xo: -60.7716,
+        yo: 54.6448,
+        zo: 568.3118,
+
+        // 相機在物空間族轉角，
+        // 其中 x y 軸接近 90°
+        omega:0.0760,
+        phi:-0.0883,
+        kappa:-0.2558 
+    }
+
+    // 內方位參數
+    var iop = [
+         0.041933,  // xp
+         -0.016958,  // yp
+         3.984584  // c
+    ]
+
+    // 有了內外方位參數的共線式物件
+    var ceqn = new ColinearityEquation(eop, iop)
+
+    var pixelSize = 0.0014*1000,  // 單位 um
+        width = 3328,  // 單位像素
+        height = 1872
+
+    // 四個角的像空間座標
+    var pointsInPhoto = [
+        [width/2, height/2, 0],
+        [-width/2, height/2, 0],
+        [width/2, -height/2, 0],
+        [-width/2, -height/2, 0]
+    ]
+
+    // 把像空間座標的陣列每個元素，
+    // 作為函數 ceqn.photoToGround 的參數，
+    // 結果再放進 pointsInGround 陣列。
+    var pointsInGround = pointsInPhoto.map(
+    function photoToGround(point) {
+        return ceqn.photoToGround(point)
+    })
+
+    // 顯示出結果
+    console.log(pointsInGround.join('\n'))
+
+X                  |         Y       |   Z
+-------------------|-----------------|------
+264.94611896620967|175.4693777826725|0
+-211.09793536035852|291.82108632733224|0
+182.05429243562483|-90.13272484313029|0
+-269.1081529765974|35.20632612336624|0
+
+計算 GSD
+--------
+像比例尺 = h / c = 568.3118 / 3.984584 = 142.6276369126614
+
+空間解析度 = pixel_size * 像比例尺 = 0.0014 * 142.6276369126614 = 0.19967869167772595mm
+
+GSD = 0.2mm
+
+地面 GSD
+--------
+### X 軸方向
+(264.94611896620967 + 269.1081529765974) / GSD = 2670
+
+### Y 軸方向
+(291.82108632733224 + 90.13272484313029) / GSD = 1910
+
+</pre>
+
+<footer></footer>
+<script src="https://gholk.github.io/ext/luser-meta.js" defer></script>
+<script src="https://gholk.github.io/ext/luser-anchor-qrcode.js" defer></script>
+<script src="http://cdn.bootcss.com/highlight.js/8.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>  
+
+</body>
+</html>
+
