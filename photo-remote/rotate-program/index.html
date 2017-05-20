@@ -46,6 +46,19 @@
 <li><a href="icfs">輸出資料</a></li>
 </ul>
 
+<h2><a href="free-lens-distortion.html">透鏡畸變</a></h2>
+<p>
+重寫了部份的 <a href="node_modules/colinearityEquation.coffee">
+共線式主程式</a> 與 <a href="coli.js">腳本</a> ，
+加入透鏡畸變的計算。
+</p>
+<p>
+也重算了所有 <a href="icfs">點的誤差</a> ，
+發現之前有算錯，共且數字太小看不太出來誤差，
+所以在作圖時把誤差乘十倍，才看得出來誤差方向。
+</p>
+
+
 </main>
 
 <script src="../../ext/luser-meta.js" defer></script>

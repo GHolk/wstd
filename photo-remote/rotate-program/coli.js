@@ -10,6 +10,7 @@ var iop = [
     3.9845  // c
 ]
 
+// 透鏡畸變參數
 iop.k = [-6.9954e-03, 7.7051e-04, -7.5490e-51]
 iop.p = [0,0]
 
@@ -419,21 +420,23 @@ var pointsInPhoto = {}
 // photo size
 photoSize = [3328, 1872].map(function(s){ return s * 0.0014 / 2 })
 
-// object save colinearity solver for each photo. 
+// 存放各張照片共線式的關聯陣列
 var solvers = {}
 
 for (var i in eops) {
+    // 初始化每張照片的共線式
     solvers[i] = new ColinearityEquation(eops[i], iop)
     pointsInPhoto[i] = {}
     for (var j in points) {
-        // equal to solvers[i](points[j][0], points[j][1], points[j][2])
+        // 求解該點在像空間座標
         var vec = solvers[i].groundToPhoto(points[j])
 
-        // test if point inside photo. 
+        // 測試該點是否在該照片內
         if (
             Math.abs(vec[0]) <= photoSize[0] &&
             Math.abs(vec[1]) <= photoSize[1]
         ) {
+            // 記錄在照片內的點
             pointsInPhoto[i][j] = vec
         }
     }
@@ -450,6 +453,7 @@ function createIcfTable(data) {
         })
 }
 
+// parse icf 檔的函數
 function createIcfStructure(data) {
     var structure = {}
     data.trim().split(/\n/g).map(function(row){
@@ -463,7 +467,7 @@ function createIcfStructure(data) {
 
 photoPointError = {}
 
-// use closure to save filename of image.
+// 用閉包讀檔
 function wrapFileName(filename) {
 
     // function load xxx.icf data
@@ -472,11 +476,16 @@ function wrapFileName(filename) {
         var icfStructure = createIcfStructure(data)
         var icf = filename, jpg = filename.replace(/icf$/,'jpg')
         var pointsError = {}
+
+        // 對在某個 icf 檔內的點測試
         for (var point in icfStructure) {
+
+            // 若也在相片內則計算兩者差
             if (pointsInPhoto[jpg][point]) {
                 var diff = pointsInPhoto[jpg][point]
                     .multiply(-1)
                     .add(icfStructure[point])
+                // 記錄兩者的差
                 pointsError[point] = diff
             }
         }
@@ -484,12 +493,13 @@ function wrapFileName(filename) {
     }
 }
 
+// 實際開始讀檔，讀完資料傳給 wrapFileName(icf) 這個函數。
 for (var jpg in pointsInPhoto) {
     var icf = jpg.replace(/jpg$/,'icf')
     fs.readFile(icf, 'utf8', wrapFileName(icf))
 }
 
-// output error in format:
+// 出輸格式
 //  pointname   x   y   z   dx  dy  dz
 function tableString(jpg) {
     var table = []
@@ -508,6 +518,7 @@ for (var jpg in pointsInPhoto) {
     fs.writeFile(jpg.replace('jpg','err'), tableString(jpg), 'utf8')
 }
 
+// 輸出計算完的結果
 exports.pe = photoPointError
 exports.prip = pointsInPhoto
 exports.createIcfStructure = createIcfTable
