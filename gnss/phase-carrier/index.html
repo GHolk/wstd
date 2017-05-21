@@ -1,0 +1,160 @@
+<!DOCTYPE HTML>
+<html lang="zh-TW" prefix="og: http://ogp.me/ns#">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="UTF-8">
+<meta name="author" property="og:article:author" content="c34031328">
+<meta name="copyright" content="Common Creative, by c34031328">
+<meta name="generator" content="vim">
+<!-- 以上一般不用改，以下才要改。 -->
+
+<!-- 後設資料 -->
+<meta name="date" property="og:article:public_time" content="">
+<meta name="keywords" property="og:article:tag" content="">
+
+<!-- 和網頁位置有關 -->
+<link rel="stylesheet" type="text/css" href="https://gholk.github.io/ext/word.css">
+
+<title></title>
+</head>
+<body>
+<main>
+<h2>載波相對定位</h2>
+<p>使用 trimble bisness center 套裝軟體做載波相對定位。</p>
+<h2>座標轉換</h2>
+<p>trimble 所輸出的座標是 WGS84 座標，
+以地心為原點的卡氏座標系統。
+但座標真值是用 TWD97 座標表示，
+需要將 WGS84 轉到 TWD97 或反之。</p>
+<p>大部份人決定從 WGS84 轉到 TWD97 ，
+因為用 TWD97 平面座標系統，
+才能較明顯的看出各方向誤差分布意義。
+且前幾次作業也是用 TWD97 的，可以直接比較。</p>
+<p>之前助教給的程式中有函數可以從地心地固 X Y Z
+轉到地心地固經緯度、橢球高。
+又之前大地衛星測量實習這門課中，
+有程式可以從 WGS84 經緯度座標
+轉到 TWD97 平面座標。
+總之就全部轉到了 TWD97 平面座標系統。</p>
+<h2>統計數據</h2>
+<table>
+<thead>
+<tr>
+<th>種類 (m)</th>
+<th>南北方向</th>
+<th>東西方向</th>
+<th>高程方向</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>平均</td>
+<td>0.002012412</td>
+<td>0.0001031829</td>
+<td>-0.003862996</td>
+</tr>
+<tr>
+<td>方均根</td>
+<td>0.0035105656</td>
+<td>0.002578235</td>
+<td>0.0100330977</td>
+</tr>
+<tr>
+<td>上次的虛擬距離差分定位方均根</td>
+<td>0.3922</td>
+<td>0.4852</td>
+<td>1.5373</td>
+</tr>
+</tbody>
+</table>
+<h3>載波相位誤差圖</h3>
+<p><img src="e-epoch.svg" alt="時間與東西方向誤差"></p>
+<p><img src="h-epoch.svg" alt="時間與高程方向誤差"></p>
+<p><img src="nedistribution.svg" alt="東西方向誤差散布"></p>
+<p><img src="n-epoch.svg" alt="時間與南北方向誤差"></p>
+<h3>虛擬距離差分定位誤差圖</h3>
+<p><img src="../difference-location/error-xy.png" alt="虛擬距離差分定位的誤差散布圖"></p>
+<h2>分析與心得</h2>
+<p>載波相位的精度相當高，到達厘米等級，
+遠超過電碼定位精度。</p>
+<p>
+在東西、南北方向隨時間的分布圖中，
+可以看到資料分布成帶狀。
+推測是因為載波相位最後從實數解 fix 為整數解，
+所以只剩整數間就沒有資料，
+只有整數有資料，也就是一條條的整數區域。
+</p>
+</main>
+
+<pre class="markdown raw">
+載波相對定位
+------------
+使用 trimble bisness center 套裝軟體做載波相對定位。
+
+座標轉換
+--------
+trimble 所輸出的座標是 WGS84 座標，
+以地心為原點的卡氏座標系統。
+但座標真值是用 TWD97 座標表示，
+需要將 WGS84 轉到 TWD97 或反之。
+
+大部份人決定從 WGS84 轉到 TWD97 ，
+因為用 TWD97 平面座標系統，
+才能較明顯的看出各方向誤差分布意義。
+且前幾次作業也是用 TWD97 的，可以直接比較。
+
+之前助教給的程式中有函數可以從地心地固 X Y Z
+轉到地心地固經緯度、橢球高。
+又之前大地衛星測量實習這門課中，
+有程式可以從 WGS84 經緯度座標
+轉到 TWD97 平面座標。
+總之就全部轉到了 TWD97 平面座標系統。
+
+
+統計數據
+--------
+
+種類 (m) | 南北方向     | 東西方向     | 高程方向
+---------|--------------|--------------|---------------
+平均     | 0.002012412  | 0.0001031829 | -0.003862996
+方均根   | 0.0035105656 | 0.002578235  |  0.0100330977
+上次的虛擬距離差分定位方均根 | 0.3922 | 0.4852 | 1.5373
+
+
+### 載波相位誤差圖
+
+![時間與東西方向誤差](e-epoch.svg)
+
+![時間與高程方向誤差](h-epoch.svg)
+
+![東西方向誤差散布](nedistribution.svg)
+
+![時間與南北方向誤差](n-epoch.svg)
+
+
+### 虛擬距離差分定位誤差圖
+
+![虛擬距離差分定位的誤差散布圖](../difference-location/error-xy.png)
+
+
+分析與心得
+----------
+載波相位的精度相當高，到達厘米等級，
+遠超過電碼定位精度。
+
+在東西、南北方向隨時間的分布圖中，
+可以看到資料分布成帶狀。
+推測是因為載波相位最後從實數解 fix 為整數解，
+所以只剩整數間就沒有資料，
+只有整數有資料，也就是一條條的整數區域。
+
+
+</pre>
+
+<footer></footer>
+<script src="https://gholk.github.io/ext/luser-meta.js" defer></script>
+<script src="https://gholk.github.io/ext/luser-anchor-qrcode.js" defer></script>
+
+</body>
+</html>
+

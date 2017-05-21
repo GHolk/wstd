@@ -1,0 +1,147 @@
+<!DOCTYPE HTML>
+<html lang="zh-TW" prefix="og: http://ogp.me/ns#">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="UTF-8">
+<meta name="author" property="og:article:author" content="c34031328">
+<meta name="copyright" content="Common Creative, by c34031328">
+<meta name="generator" content="vim">
+<!-- 以上一般不用改，以下才要改。 -->
+
+<!-- 後設資料 -->
+<meta name="date" property="og:article:public_time" content="2017-05-09"> 
+<meta name="keywords" property="og:article:tag" content="gnss,difference,relative">
+
+<!-- 和網頁位置有關 -->
+<link rel="stylesheet" type="text/css" href="https://gholk.github.io/ext/word.css">
+
+<title>相對定位</title>
+</head>
+<body>
+<main>
+<h1>相對定位</h1>
+<p>相對定位是相對於某個已知點座標定位，
+同時在已知點與待測點觀測。
+運用不同觀測、不同衛星間的差分，
+得到消除誤差項的觀測方程式。
+是目前普遍採用的定位方法。</p>
+<h2>差分定位結果</h2>
+<table>
+<thead>
+<tr>
+<th>方向</th>
+<th>方均根誤差 (m)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>東西</td>
+<td>0.4852</td>
+</tr>
+<tr>
+<td>南北</td>
+<td>0.3922</td>
+</tr>
+<tr>
+<td>高程</td>
+<td>1.5373</td>
+</tr>
+</tbody>
+</table>
+<p><img src="error-xy.png" alt="error distribution"></p>
+<p>整體比上次僅改正對流層、電離層的好很多。</p>
+<h2>改正大氣層後結果</h2>
+<table>
+<thead>
+<tr>
+<th>誤差</th>
+<th>方均根誤差</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>東西方向</td>
+<td>1.3774</td>
+</tr>
+<tr>
+<td>南北方向</td>
+<td>0.9848</td>
+</tr>
+<tr>
+<td>高程方向</td>
+<td>3.0093</td>
+</tr>
+</tbody>
+</table>
+<p><img src="../atmosphere-correction/troposphere-ionosphere-correction.png" alt="電離層與對流層的改正"></p>
+<h2>分析</h2>
+<p>程式是用組員的，自己看不太懂 @@&quot;
+可能上課沒有專心聽，程式也不熟，
+不知道其它部份是在算什麼，
+一直找不到 xi,xk 存在哪些變數裡。</p>
+<p>他們的權也不知道為什麼要這樣給，
+對角線是 4 ，其它都是 2 。
+我原本是想先給單位方陣的，
+事後再用後驗變方協變方矩陣的逆做為權。</p>
+<p>這次比較趕，就沒有很認真做，
+周三還要考期中考呢。</p>
+</main>
+
+<pre class="markdown raw">
+相對定位
+========
+相對定位是相對於某個已知點座標定位，
+同時在已知點與待測點觀測。
+運用不同觀測、不同衛星間的差分，
+得到消除誤差項的觀測方程式。
+是目前普遍採用的定位方法。
+
+差分定位結果
+------------
+
+方向 | 方均根誤差 (m)
+-----|----------
+東西 | 0.4852
+南北 | 0.3922
+高程 | 1.5373
+
+![error distribution](error-xy.png)
+
+整體比上次僅改正對流層、電離層的好很多。
+
+
+改正大氣層後結果
+----------------
+
+誤差 |方均根誤差
+-----|----------
+東西方向|1.3774
+南北方向|0.9848
+高程方向|3.0093
+
+![電離層與對流層的改正](../atmosphere-correction/troposphere-ionosphere-correction.png)
+
+分析
+----
+程式是用組員的，自己看不太懂 @@"
+可能上課沒有專心聽，程式也不熟，
+不知道其它部份是在算什麼，
+一直找不到 xi,xk 存在哪些變數裡。
+
+他們的權也不知道為什麼要這樣給，
+對角線是 4 ，其它都是 2 。
+我原本是想先給單位方陣的，
+事後再用後驗變方協變方矩陣的逆做為權。
+
+這次比較趕，就沒有很認真做，
+周三還要考期中考呢。
+
+</pre>
+
+<footer></footer>
+<script src="https://gholk.github.io/ext/luser-meta.js" defer></script>
+<script src="https://gholk.github.io/ext/luser-anchor-qrcode.js" defer></script>
+
+</body>
+</html>
+
