@@ -14,24 +14,409 @@
 
 <!-- 和網頁位置有關 -->
 <link rel="stylesheet" type="text/css" href="https://gholk.github.io/ext/word.css">
-
-<title></title>
+<style>
+table {
+    max-width: 100%;
+    word-wrap: break-word;
+    word-break: break-all;
+}
+</style>
+<title>大地作業三：高程系統</title>
 </head>
 <body>
 <main>
+<h1>大地作業三：高程系統</h1>
+<h2>高程轉換</h2>
+<p>若大地水準面重力位 W0=62636856.0J，
+點 A(緯度 21.215 度，經度=121.5 度，大地起伏=20.2 公尺)
+重力位 W=62636886.0J，
+試問點 A 之力高、正高、正常高、橢球高分別為何?</p>
+<h3>大地位數</h3>
+<p>大地位數為重力位差，點 A 相對大地水準面大地位數
+C = W - W0 = 30.0J = 3000 g.p.u. 。</p>
+<h3>力高</h3>
+<p>力高為大地位數除以正常重力加速度，依緯度不同，
+此處使用下公式計算 GRS80 橢球上不同緯度的重力加速度。</p>
+<pre><code>function gamma = normal_gravity (latitude)
+    gamma = 9.7803267715 * (
+        1 +
+        0.0052790414 * sin(latitude)^2 +
+        0.0000232718 * sin(latitude)^4 +
+        0.0000001262 * sin(latitude)^6 +
+        0.0000000007 * sin(latitude)^8
+    );
+end
+
+C / γR = -30 / 9.8180 = -3.0665m
+</code></pre><h3>正高</h3>
+<p>正高為大地水準面到地表面的高程，
+可以用平均加速度除大地水準面到地表的大地位數得到。</p>
+<p>使用上次作業到三階的 EGM06 模型計算，
+A 點 geoid 上的重力異常為 2.7878e-07，
+也就是 geoid 上的重力加速度幾乎和正常重力加速度一樣。</p>
+<p>利用公式正高 H = C / ( g + 0.0424 * H ) ，
+解得 H = -3.0556</p>
+<h3>橢球高</h3>
+<p>橢球高和正高差在橢球從橢球起算，
+正高為從大地水準面起算，兩者差為大地起伏。</p>
+<p>h = H + N = 20.3m - 3.0970 = 17.2443</p>
+<h3>正常高</h3>
+<p>正常高為平均正常加速度除以大地位數，
+使用自由空間約化由橢球面的正常重力加速度
+計算橢球高為 h 處的正常重力加速度：
+3036.6 &times; 0.3086 = 937.0948 mgal</p>
+<p>平均正常重力加速度： 9.8180 - 0.009371 / 2 = 9.8133</p>
+<p>HN = C / &gamma; = -3.0571m</p>
+<h2>高程改正</h2>
+<p>緯度 20&deg; 、 &gamma;0 = 981128.12 mgal</p>
+<table>
+<tr><th>    <th>A    <th>B    <th>C    <th>D    <th>E    <th>F    <th>G    <th>H    <th>I    <th>J    <th>K    <th>L    <th>M
+<tr><th>1    <td>gamma    <td>981128.12    <td>elevation    <td>gravity    <td>Δg    <td>orthometric    <td>    <td>    <td>dynamic    <td>normal    <td>    <td>    <td>
+<tr><th>2    <td>latitude    <td>20    <td>89.46    <td>981111.13    <td>0.62    <td>=(E3-E2)<em>(C3+C2)    <td>=F2/(2</em>$B$1)    <td>    <td>=(AVERAGE(D2:D3)-$B$1)/$B$1<em>(C3-C2)    <td>=$B$1 - (0.15438 - 0.00022 </em> SIN((90-$B$2)/180<em>PI())^2)</em>C2 + 0.00000018 <em> C2^2    <td>=D2+0.0424</em>C2    <td>=K2-J2    <td>=L2<em>C2/K2
+<tr><th>3    <td>f    <td>    <td>132.16    <td>981101.88    <td>-0.21    <td>=(E4-E3)</em>(C4+C3)    <td>=F3/(2<em>$B$1)    <td>    <td>=(AVERAGE(D3:D4)-$B$1)/$B$1</em>(C4-C3)    <td>    <td>    <td>    <td>
+<tr><th>4    <td>    <td>    <td>137.1    <td>981101.31    <td>0.19    <td>=(E5-E4)<em>(C5+C4)    <td>=F4/(2</em>$B$1)    <td>    <td>=(AVERAGE(D4:D5)-$B$1)/$B$1<em>(C5-C4)    <td>    <td>    <td>    <td>
+<tr><th>5    <td>    <td>    <td>131.81    <td>981103.16    <td>1    <td>=(E6-E5)</em>(C6+C5)    <td>=F5/(2<em>$B$1)    <td>    <td>=(AVERAGE(D5:D6)-$B$1)/$B$1</em>(C6-C5)    <td>    <td>    <td>    <td>
+<tr><th>6    <td>    <td>    <td>183.22    <td>981090.59    <td>-1.45    <td>=(E7-E6)<em>(C7+C6)    <td>=F6/(2</em>$B$1)    <td>    <td>=(AVERAGE(D6:D7)-$B$1)/$B$1<em>(C7-C6)    <td>    <td>    <td>    <td>
+<tr><th>7    <td>    <td>    <td>188.31    <td>981092.1    <td>1.07    <td>=(E8-E7)</em>(C8+C7)    <td>=F7/(2<em>$B$1)    <td>    <td>=(AVERAGE(D7:D8)-$B$1)/$B$1</em>(C8-C7)    <td>    <td>    <td>    <td>
+<tr><th>8    <td>    <td>    <td>213.1    <td>981084.51    <td>-1.64    <td>    <td>    <td>    <td>    <td>=$B$1 - (0.15438 - 0.00022 <em> SIN((90-$B$2)/180</em>PI())^2)<em>C8 + 0.00000018 </em> C8^2    <td>=D8+0.0424<em>C8    <td>=K8-J8    <td>=L8</em>C8/K8
+<tr><th>9    <td>    <td>    <td>    <td>    <td>    <td>=SUM(F2:F8)    <td>=SUM(G2:G8)    <td>=(0.05595/$B$1)*(C$8^2-C$2^2) - G2    <td>=SUM(I2:I7)    <td>=H9    <td>    <td>    <td>=$H$9+M$8-M$2
+</table>
+<h3>正高改正</h3>
+<pre><code>.EQ
+OC =
+0.05595 over gamma sub R
+( H sup 2 sub end - H sup 2 sub begin ) -
+1 over { 2 gamma sub R }
+Sigma from { i = 1 } to { n - 1 }
+{
+( Delta g sub { i + 1 } - Delta g sub i )
+( H sub i + H sub { i + 1 } )
+} = 0.0022270067 m
+.EN
+</code></pre><math><mrow><mi>O</mi><mi>C</mi><mo>&equals;</mo><mfrac><mrow><mn>0</mn><mo>.</mo><mn>0</mn><mn>5</mn><mn>5</mn><mn>9</mn><mn>5</mn></mrow><msub><mo>&gamma;</mo><mi>R</mi></msub></mfrac><mo>(</mo><msup><mi>H</mi><msub><mn>2</mn><mrow><mi>e</mi><mi>n</mi><mi>d</mi></mrow></msub></msup><mo>&minus;</mo><msup><mi>H</mi><msub><mn>2</mn><mrow><mi>b</mi><mi>e</mi><mi>g</mi><mi>i</mi><mi>n</mi></mrow></msub></msup><mo>)</mo><mo>&minus;</mo><mfrac><mn>1</mn><mrow><mn>2</mn><msub><mo>&gamma;</mo><mi>R</mi></msub></mrow></mfrac><munderover><mo>&Sigma;</mo><mrow><mi>i</mi><mo>&equals;</mo><mn>1</mn></mrow><mrow><mi>n</mi><mo>&minus;</mo><mn>1</mn></mrow></munderover><mo>(</mo><mo>&Delta;</mo><msub><mi>g</mi><mrow><mi>i</mi><mo>&plus;</mo><mn>1</mn></mrow></msub><mo>&minus;</mo><mo>&Delta;</mo><msub><mi>g</mi><mi>i</mi></msub><mo>)</mo><mo>(</mo><msub><mi>H</mi><mi>i</mi></msub><mo>&plus;</mo><msub><mi>H</mi><mrow><mi>i</mi><mo>&plus;</mo><mn>1</mn></mrow></msub><mo>)</mo><mo>&equals;</mo><mn>0</mn><mo>.</mo><mn>0</mn><mn>0</mn><mn>2</mn><mn>2</mn><mn>2</mn><mn>7</mn><mn>0</mn><mn>0</mn><mn>6</mn><mn>7</mn><mi>m</mi></mrow></math>
+
+<h3>力高改正</h3>
+<pre><code>.EQ
+DC sub { A B } =
+Sigma from A to B {
+{ g sub i - gamma sub R } over gamma sub R
+delta n sub i } = -0.0037686886 m
+.EN
+</code></pre><math><mrow><mi>D</mi><msub><mi>C</mi><mrow><mi>A</mi><mi>B</mi></mrow></msub><mo>&equals;</mo><munderover><mo>&Sigma;</mo><mi>A</mi><mi>B</mi></munderover><mfrac><mrow><msub><mi>g</mi><mi>i</mi></msub><mo>&minus;</mo><msub><mo>&gamma;</mo><mi>R</mi></msub></mrow><msub><mo>&gamma;</mo><mi>R</mi></msub></mfrac><mo>&delta;</mo><msub><mi>n</mi><mi>i</mi></msub><mo>&equals;</mo><mo>&minus;</mo><mn>0</mn><mo>.</mo><mn>0</mn><mn>0</mn><mn>3</mn><mn>7</mn><mn>6</mn><mn>8</mn><mn>6</mn><mn>8</mn><mn>8</mn><mn>6</mn><mi>m</mi></mrow></math>
+
+<h3>正常高改正</h3>
+<pre><code>.EQ
+NC sub { A B } =
+OC sub { A B } +
+( { delta sub B H sub B } over { { gamma sub B } bar } -
+{ delta sub A H sub A } over { { gamma sub A } bar } ) =
+0.0017978974 m
+.EN
+</code></pre><math><mrow><mi>N</mi><msub><mi>C</mi><mrow><mi>A</mi><mi>B</mi></mrow></msub><mo>&equals;</mo><mi>O</mi><msub><mi>C</mi><mrow><mi>A</mi><mi>B</mi></mrow></msub><mo>&plus;</mo><mo>(</mo><mfrac><mrow><msub><mo>&delta;</mo><mi>B</mi></msub><msub><mi>H</mi><mi>B</mi></msub></mrow><mover accent='false'><msub><mo>&gamma;</mo><mi>B</mi></msub><mo>&macr;</mo></mover></mfrac><mo>&minus;</mo><mfrac><mrow><msub><mo>&delta;</mo><mi>A</mi></msub><msub><mi>H</mi><mi>A</mi></msub></mrow><mover accent='false'><msub><mo>&gamma;</mo><mi>A</mi></msub><mo>&macr;</mo></mover></mfrac><mo>)</mo><mo>&equals;</mo><mn>0</mn><mo>.</mo><mn>0</mn><mn>0</mn><mn>1</mn><mn>7</mn><mn>9</mn><mn>7</mn><mn>8</mn><mn>9</mn><mn>7</mn><mn>4</mn><mi>m</mi></mrow></math>
+
+<h3>試算表</h3>
+<p>用試算表算的，下面是計算過程：</p>
+<table>
+<tr><th>	<th>A	<th>B	<th>C	<th>D	<th>E	<th>F	<th>G	<th>H	<th>I	<th>J	<th>K	<th>L	<th>M
+<tr><th>1	<td>gamma	<td>981128.12	<td>elevation	<td>gravity	<td>Δg	<td>orthometric	<td>	<td>	<td>dynamic	<td>normal	<td>	<td>	<td>
+<tr><th>2	<td>latitude	<td>20	<td>89.46	<td>981111.13	<td>0.62	<td>=(E3-E2)*(C3+C2)	<td>=F2/(2*$B$1)	<td>	<td>=(AVERAGE(D2:D3)-$B$1)/$B$1*(C3-C2)	<td>=$B$1 - (0.15438 - 0.00022 * SIN((90-$B$2)/180*PI())^2)*C2 + 0.00000018 * C2^2	<td>=D2+0.0424*C2	<td>=K2-J2	<td>=L2*C2/K2
+<tr><th>3	<td>f	<td>	<td>132.16	<td>981101.88	<td>-0.21	<td>=(E4-E3)*(C4+C3)	<td>=F3/(2*$B$1)	<td>	<td>=(AVERAGE(D3:D4)-$B$1)/$B$1*(C4-C3)	<td>	<td>	<td>	<td>
+<tr><th>4	<td>	<td>	<td>137.1	<td>981101.31	<td>0.19	<td>=(E5-E4)*(C5+C4)	<td>=F4/(2*$B$1)	<td>	<td>=(AVERAGE(D4:D5)-$B$1)/$B$1*(C5-C4)	<td>	<td>	<td>	<td>
+<tr><th>5	<td>	<td>	<td>131.81	<td>981103.16	<td>1	<td>=(E6-E5)*(C6+C5)	<td>=F5/(2*$B$1)	<td>	<td>=(AVERAGE(D5:D6)-$B$1)/$B$1*(C6-C5)	<td>	<td>	<td>	<td>
+<tr><th>6	<td>	<td>	<td>183.22	<td>981090.59	<td>-1.45	<td>=(E7-E6)*(C7+C6)	<td>=F6/(2*$B$1)	<td>	<td>=(AVERAGE(D6:D7)-$B$1)/$B$1*(C7-C6)	<td>	<td>	<td>	<td>
+<tr><th>7	<td>	<td>	<td>188.31	<td>981092.1	<td>1.07	<td>=(E8-E7)*(C8+C7)	<td>=F7/(2*$B$1)	<td>	<td>=(AVERAGE(D7:D8)-$B$1)/$B$1*(C8-C7)	<td>	<td>	<td>	<td>
+<tr><th>8	<td>	<td>	<td>213.1	<td>981084.51	<td>-1.64	<td>	<td>	<td>	<td>	<td>=$B$1 - (0.15438 - 0.00022 * SIN((90-$B$2)/180*PI())^2)*C8 + 0.00000018 * C8^2	<td>=D8+0.0424*C8	<td>=K8-J8	<td>=L8*C8/K8
+<tr><th>9	<td>	<td>	<td>	<td>	<td>	<td>=SUM(F2:F8)	<td>=SUM(G2:G8)	<td>=(0.05595/$B$1)*(C$8^2-C$2^2) - G2	<td>=SUM(I2:I7)	<td>=H9	<td>	<td>	<td>=$H$9+M$8-M$2
+</table>
+
+
+<h2>三角高程</h2>
+<p>天頂距 z = 86.8&deg; 、斜距 S = 2200m 、儀器高 i = 1.4m 、稜鏡高 t = 1.0m 、
+緯度 21&deg; 、垂線偏差 &epsilon; = 1.2&prime; 、
+地球半徑 R = 6378137 ，
+，求改正系統誤差後高程差。</p>
+<p>斜距 D = S cos(z) = 2196.5697 。</p>
+<h3>地球曲率</h3>
+<p><code>D^2 / (2 * R) = 0.3782</code></p>
+<h3>大氣折射</h3>
+<p>大氣折射係數 k 使用 0.13 。</p>
+<p><code>k*D^2 / (2 * R) = 0.04917</code></p>
+<h3>重線偏差</h3>
+<p><code>sin(ε)*D = 0.7667</code></p>
+<h3>改正結果</h3>
+<p><code>Δh = s*cos(z) + 0.3782 - 0.04917 - 43.9 + i - t = 869.2335</code></p>
+<h2>精密水準</h2>
+<p>精密水準可以做的系統改正：</p>
+<h3>視準軸誤差改正</h3>
+<p>由於視準軸不水平造成的誤差，
+與水平面夾了坡度 c 度。
+可以透過定椿法測定 c 改正。</p>
+<p><code>Δn = b - f - c ( sb - sf )</code></p>
+<p>其中 b f 為後前視讀數，
+sb sf 為後前視距離，
+c 為視準軸誤差係數。</p>
+<h3>大氣折射改正</h3>
+<p>通常近地表處氣溫較高，
+因此光線會成 U 型向上折射。</p>
+<p><code>Δn = Δn&#39; + RE</code></p>
+<p><code>RE = - α S^2 ΔT Δn</code></p>
+<p>其中 α 為常數， S 為前後視距平均；
+ΔT 為近地表與遠地表兩點的溫差，
+不同的測量高度對應不同的 α ；
+Δn 為前後視高程差。</p>
+<h3>地球曲率改正</h3>
+<p>水準測量中的地球曲率誤差，
+前後視是可以相消的，
+若前後視距相等，則地球曲率誤差為 0 。</p>
+<p><code>Δn = b - f - (Δb - Δf)</code></p>
+<p><code>Δi = Si^2 / 2R</code></p>
+<h3>刻度改正</h3>
+<p>刻度的誤差可以用泰勒展開式模擬。
+但若階數用到太高，
+會把隨機誤差也計算進去，是不對的。
+可以用顯注性測試判定高階項存在必要。</p>
+<h2>大氣折射改正計算</h2>
+<p>大氣折射是因為不同高度的大氣溫度不同，
+折射率也跟著不同，
+使光線會成 U 型行進造成的誤差。
+前後視距接近、水準尺讀數接近，
+都能減少大氣折射誤差。</p>
+<p>2.5 公尺處 25.2&deg;C 、 0.5m 處 25.6&deg;C ，
+前視視距 45.25m 、讀數 1.253m ，
+後視視距 45.15m 、讀數 0.888m 。</p>
+<p><code>RE = - α S^2 ΔT Δn =
+-6.7E-8 * 45.20^2 * -0.4 * 0.365 =
+1.999E-5</code></p>
+<p>此處 α 根據內政部一等水準作業規範，
+使用適合台灣地區的電子經緯儀折射係數
+α = 6.7E-8 ，
+對應 ΔT 為 2.5m 與 0.5m 處溫差。</p>
+<p><code>Δn = Δn&#39; + RE =
+0.365 + 1.999E-5 = 0.36502</code></p>
+
 </main>
 
 <pre class="markdown raw">
+
 大地作業三：高程系統
 
 高程轉換
 --------
-若大地水準面重力位 W0=62636856.0J ，
-點A(緯度21.215度，經度=121.5度，大地起伏=20.2公尺)
-重力位W=62636886.0 m2s-2，
-試問點A之力高、正高、正常高、橢球高分別為何?
+若大地水準面重力位 W0=62636856.0J，
+點 A(緯度 21.215 度，經度=121.5 度，大地起伏=20.2 公尺)
+重力位 W=62636886.0J，
+試問點 A 之力高、正高、正常高、橢球高分別為何?
 
-大地位數為重力位差，點 A 相對大地水準面 C = 
+### 大地位數
+大地位數為重力位差，點 A 相對大地水準面大地位數
+C = W - W0 = 30.0J = 3000 g.p.u. 。
+
+### 力高
+力高為大地位數除以正常重力加速度，依緯度不同，
+此處使用下公式計算 GRS80 橢球上不同緯度的重力加速度。
+
+	function gamma = normal_gravity (latitude)
+	    gamma = 9.7803267715 * (
+	        1 +
+	        0.0052790414 * sin(latitude)^2 +
+	        0.0000232718 * sin(latitude)^4 +
+	        0.0000001262 * sin(latitude)^6 +
+	        0.0000000007 * sin(latitude)^8
+	    );
+	end
+
+	C / γR = -30 / 9.8180 = -3.0665m
+
+### 正高
+正高為大地水準面到地表面的高程，
+可以用平均加速度除大地水準面到地表的大地位數得到。
+
+使用上次作業到三階的 EGM06 模型計算，
+A 點 geoid 上的重力異常為 2.7878e-07，
+也就是 geoid 上的重力加速度幾乎和正常重力加速度一樣。
+
+利用公式正高 H = C / ( g + 0.0424 * H ) ，
+解得 H = -3.0556
+
+### 橢球高
+橢球高和正高差在橢球從橢球起算，
+正高為從大地水準面起算，兩者差為大地起伏。
+
+h = H + N = 20.3m - 3.0970 = 17.2443
+
+### 正常高
+正常高為平均正常加速度除以大地位數，
+使用自由空間約化由橢球面的正常重力加速度
+計算橢球高為 h 處的正常重力加速度：
+3036.6 &times; 0.3086 = 937.0948 mgal
+
+平均正常重力加速度： 9.8180 - 0.009371 / 2 = 9.8133
+
+HN = C / &gamma; = -3.0571m
+
+
+高程改正
+--------
+緯度 20&deg; 、 &gamma;0 = 981128.12 mgal
+
+水準高 | 重力加速度 (mgal) | 重力異常 (mgal)
+-------|-------------------|---------------
+89.46  | 981111.13         |  0.62
+132.16 | 981101.88         |  -0.21
+137.10 | 981101.31         |  0.19
+131.81 | 981103.16         | 1.00
+183.22 | 981090.59         | -1.45
+188.31 | 981092.10         | 1.07
+213.10 | 981084.51         | -1.64
+
+### 正高改正
+
+    .EQ
+    OC =
+    0.05595 over gamma sub R
+    ( H sup 2 sub end - H sup 2 sub begin ) -
+    1 over { 2 gamma sub R }
+    Sigma from { i = 1 } to { n - 1 }
+    {
+    ( Delta g sub { i + 1 } - Delta g sub i )
+    ( H sub i + H sub { i + 1 } )
+    } = 0.0022270067 m
+    .EN
+
+<math><mrow><mi>O</mi><mi>C</mi><mo>&equals;</mo><mfrac><mrow><mn>0</mn><mo>.</mo><mn>0</mn><mn>5</mn><mn>5</mn><mn>9</mn><mn>5</mn></mrow><msub><mo>&gamma;</mo><mi>R</mi></msub></mfrac><mo>(</mo><msup><mi>H</mi><msub><mn>2</mn><mrow><mi>e</mi><mi>n</mi><mi>d</mi></mrow></msub></msup><mo>&minus;</mo><msup><mi>H</mi><msub><mn>2</mn><mrow><mi>b</mi><mi>e</mi><mi>g</mi><mi>i</mi><mi>n</mi></mrow></msub></msup><mo>)</mo><mo>&minus;</mo><mfrac><mn>1</mn><mrow><mn>2</mn><msub><mo>&gamma;</mo><mi>R</mi></msub></mrow></mfrac><munderover><mo>&Sigma;</mo><mrow><mi>i</mi><mo>&equals;</mo><mn>1</mn></mrow><mrow><mi>n</mi><mo>&minus;</mo><mn>1</mn></mrow></munderover><mo>(</mo><mo>&Delta;</mo><msub><mi>g</mi><mrow><mi>i</mi><mo>&plus;</mo><mn>1</mn></mrow></msub><mo>&minus;</mo><mo>&Delta;</mo><msub><mi>g</mi><mi>i</mi></msub><mo>)</mo><mo>(</mo><msub><mi>H</mi><mi>i</mi></msub><mo>&plus;</mo><msub><mi>H</mi><mrow><mi>i</mi><mo>&plus;</mo><mn>1</mn></mrow></msub><mo>)</mo><mo>&equals;</mo><mn>0</mn><mo>.</mo><mn>0</mn><mn>0</mn><mn>2</mn><mn>2</mn><mn>2</mn><mn>7</mn><mn>0</mn><mn>0</mn><mn>6</mn><mn>7</mn><mi>m</mi></mrow></math>
+
+### 力高改正
+
+    .EQ
+    DC sub { A B } =
+    Sigma from A to B {
+    { g sub i - gamma sub R } over gamma sub R
+    delta n sub i } = -0.0037686886 m
+    .EN
+
+<math><mrow><mi>D</mi><msub><mi>C</mi><mrow><mi>A</mi><mi>B</mi></mrow></msub><mo>&equals;</mo><munderover><mo>&Sigma;</mo><mi>A</mi><mi>B</mi></munderover><mfrac><mrow><msub><mi>g</mi><mi>i</mi></msub><mo>&minus;</mo><msub><mo>&gamma;</mo><mi>R</mi></msub></mrow><msub><mo>&gamma;</mo><mi>R</mi></msub></mfrac><mo>&delta;</mo><msub><mi>n</mi><mi>i</mi></msub><mo>&equals;</mo><mo>&minus;</mo><mn>0</mn><mo>.</mo><mn>0</mn><mn>0</mn><mn>3</mn><mn>7</mn><mn>6</mn><mn>8</mn><mn>6</mn><mn>8</mn><mn>8</mn><mn>6</mn><mi>m</mi></mrow></math>
+
+### 正常高改正
+
+    .EQ
+    NC sub { A B } =
+    OC sub { A B } +
+    ( { delta sub B H sub B } over { { gamma sub B } bar } -
+    { delta sub A H sub A } over { { gamma sub A } bar } ) =
+    0.0017978974 m
+    .EN
+
+<math><mrow><mi>N</mi><msub><mi>C</mi><mrow><mi>A</mi><mi>B</mi></mrow></msub><mo>&equals;</mo><mi>O</mi><msub><mi>C</mi><mrow><mi>A</mi><mi>B</mi></mrow></msub><mo>&plus;</mo><mo>(</mo><mfrac><mrow><msub><mo>&delta;</mo><mi>B</mi></msub><msub><mi>H</mi><mi>B</mi></msub></mrow><mover accent='false'><msub><mo>&gamma;</mo><mi>B</mi></msub><mo>&macr;</mo></mover></mfrac><mo>&minus;</mo><mfrac><mrow><msub><mo>&delta;</mo><mi>A</mi></msub><msub><mi>H</mi><mi>A</mi></msub></mrow><mover accent='false'><msub><mo>&gamma;</mo><mi>A</mi></msub><mo>&macr;</mo></mover></mfrac><mo>)</mo><mo>&equals;</mo><mn>0</mn><mo>.</mo><mn>0</mn><mn>0</mn><mn>1</mn><mn>7</mn><mn>9</mn><mn>7</mn><mn>8</mn><mn>9</mn><mn>7</mn><mn>4</mn><mi>m</mi></mrow></math>
+
+### 試算表
+
+用試算表算的，下面是計算過程：
+
+<table>
+<tr><th>	<th>A	<th>B	<th>C	<th>D	<th>E	<th>F	<th>G	<th>H	<th>I	<th>J	<th>K	<th>L	<th>M
+<tr><th>1	<td>gamma	<td>981128.12	<td>elevation	<td>gravity	<td>Δg	<td>orthometric	<td>	<td>	<td>dynamic	<td>normal	<td>	<td>	<td>
+<tr><th>2	<td>latitude	<td>20	<td>89.46	<td>981111.13	<td>0.62	<td>=(E3-E2)*(C3+C2)	<td>=F2/(2*$B$1)	<td>	<td>=(AVERAGE(D2:D3)-$B$1)/$B$1*(C3-C2)	<td>=$B$1 - (0.15438 - 0.00022 * SIN((90-$B$2)/180*PI())^2)*C2 + 0.00000018 * C2^2	<td>=D2+0.0424*C2	<td>=K2-J2	<td>=L2*C2/K2
+<tr><th>3	<td>f	<td>	<td>132.16	<td>981101.88	<td>-0.21	<td>=(E4-E3)*(C4+C3)	<td>=F3/(2*$B$1)	<td>	<td>=(AVERAGE(D3:D4)-$B$1)/$B$1*(C4-C3)	<td>	<td>	<td>	<td>
+<tr><th>4	<td>	<td>	<td>137.1	<td>981101.31	<td>0.19	<td>=(E5-E4)*(C5+C4)	<td>=F4/(2*$B$1)	<td>	<td>=(AVERAGE(D4:D5)-$B$1)/$B$1*(C5-C4)	<td>	<td>	<td>	<td>
+<tr><th>5	<td>	<td>	<td>131.81	<td>981103.16	<td>1	<td>=(E6-E5)*(C6+C5)	<td>=F5/(2*$B$1)	<td>	<td>=(AVERAGE(D5:D6)-$B$1)/$B$1*(C6-C5)	<td>	<td>	<td>	<td>
+<tr><th>6	<td>	<td>	<td>183.22	<td>981090.59	<td>-1.45	<td>=(E7-E6)*(C7+C6)	<td>=F6/(2*$B$1)	<td>	<td>=(AVERAGE(D6:D7)-$B$1)/$B$1*(C7-C6)	<td>	<td>	<td>	<td>
+<tr><th>7	<td>	<td>	<td>188.31	<td>981092.1	<td>1.07	<td>=(E8-E7)*(C8+C7)	<td>=F7/(2*$B$1)	<td>	<td>=(AVERAGE(D7:D8)-$B$1)/$B$1*(C8-C7)	<td>	<td>	<td>	<td>
+<tr><th>8	<td>	<td>	<td>213.1	<td>981084.51	<td>-1.64	<td>	<td>	<td>	<td>	<td>=$B$1 - (0.15438 - 0.00022 * SIN((90-$B$2)/180*PI())^2)*C8 + 0.00000018 * C8^2	<td>=D8+0.0424*C8	<td>=K8-J8	<td>=L8*C8/K8
+<tr><th>9	<td>	<td>	<td>	<td>	<td>	<td>=SUM(F2:F8)	<td>=SUM(G2:G8)	<td>=(0.05595/$B$1)*(C$8^2-C$2^2) - G2	<td>=SUM(I2:I7)	<td>=H9	<td>	<td>	<td>=$H$9+M$8-M$2
+</table>
+
+
+## 三角高程
+天頂距 z = 86.8&deg; 、斜距 S = 2200m 、儀器高 i = 1.4m 、稜鏡高 t = 1.0m 、
+緯度 21&deg; 、垂線偏差 &epsilon; = 1.2&prime; 、
+地球半徑 R = 6378137 ，
+，求改正系統誤差後高程差。
+
+斜距 D = S cos(z) = 2196.5697 。
+
+
+### 地球曲率
+`D^2 / (2 * R) = 0.3782`
+
+### 大氣折射
+大氣折射係數 k 使用 0.13 。
+
+`k*D^2 / (2 * R) = 0.04917`
+
+### 重線偏差
+`sin(ε)*D = 0.7667`
+
+### 改正結果
+
+`Δh = s*cos(z) + 0.3782 - 0.04917 - 43.9 + i - t = 869.2335`
+
+
+## 精密水準
+精密水準可以做的系統改正：
+
+### 視準軸誤差改正
+由於視準軸不水平造成的誤差，
+與水平面夾了坡度 c 度。
+可以透過定椿法測定 c 改正。
+
+`Δn = b - f - c ( sb - sf )`
+
+其中 b f 為後前視讀數，
+sb sf 為後前視距離，
+c 為視準軸誤差係數。
+
+
+### 大氣折射改正
+通常近地表處氣溫較高，
+因此光線會成 U 型向上折射。
+
+`Δn = Δn' + RE`
+
+`RE = - α S^2 ΔT Δn`
+
+其中 α 為常數， S 為前後視距平均；
+ΔT 為近地表與遠地表兩點的溫差，
+不同的測量高度對應不同的 α ；
+Δn 為前後視高程差。
+
+### 地球曲率改正
+水準測量中的地球曲率誤差，
+前後視是可以相消的，
+若前後視距相等，則地球曲率誤差為 0 。
+
+`Δn = b - f - (Δb - Δf)`
+
+`Δi = Si^2 / 2R`
+
+### 刻度改正
+刻度的誤差可以用泰勒展開式模擬。
+但若階數用到太高，
+會把隨機誤差也計算進去，是不對的。
+可以用顯注性測試判定高階項存在必要。
+
+
+## 大氣折射改正計算
+大氣折射是因為不同高度的大氣溫度不同，
+折射率也跟著不同，
+使光線會成 U 型行進造成的誤差。
+前後視距接近、水準尺讀數接近，
+都能減少大氣折射誤差。
+
+2.5 公尺處 25.2&deg;C 、 0.5m 處 25.6&deg;C ，
+前視視距 45.25m 、讀數 1.253m ，
+後視視距 45.15m 、讀數 0.888m 。
+
+`RE = - α S^2 ΔT Δn =
+-6.7E-8 * 45.20^2 * -0.4 * 0.365 =
+1.999E-5`
+
+此處 α 根據內政部一等水準作業規範，
+使用適合台灣地區的電子經緯儀折射係數
+α = 6.7E-8 ，
+對應 ΔT 為 2.5m 與 0.5m 處溫差。
+
+`Δn = Δn' + RE =
+0.365 + 1.999E-5 = 0.36502`
 
 </pre>
 

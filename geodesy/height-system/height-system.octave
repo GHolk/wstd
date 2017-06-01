@@ -1,0 +1,71 @@
+# Created by Octave 4.0.0, Fri Jun 02 01:56:24 2017 CST <c34031328@ezubt>
+# name: R
+# type: scalar
+6378137
+
+
+# name: ans
+# type: scalar
+-1.998501728e-05
+
+
+# name: curv
+# type: scalar
+0.3782388465760962
+
+
+# name: d
+# type: scalar
+2196.569681200358
+
+
+# name: ei
+# type: scalar
+0.02
+
+
+# name: eic
+# type: scalar
+0.7667474481575934
+
+
+# name: frac
+# type: scalar
+0.04917105005489251
+
+
+# name: h
+# type: scalar
+825.2688476870263
+
+
+# name: hn
+# type: scalar
+-3.097034508501362
+
+
+# name: i
+# type: scalar
+1.4
+
+
+# name: latitude
+# type: scalar
+21
+
+
+# name: s
+# type: scalar
+2200
+
+
+# name: t
+# type: scalar
+1
+
+
+# name: z
+# type: scalar
+86.8
+
+
