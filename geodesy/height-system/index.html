@@ -70,49 +70,59 @@ A 點 geoid 上的重力異常為 2.7878e-07，
 <h2>高程改正</h2>
 <p>緯度 20&deg; 、 &gamma;0 = 981128.12 mgal</p>
 <table>
-<tr><th>    <th>A    <th>B    <th>C    <th>D    <th>E    <th>F    <th>G    <th>H    <th>I    <th>J    <th>K    <th>L    <th>M
-<tr><th>1    <td>gamma    <td>981128.12    <td>elevation    <td>gravity    <td>Δg    <td>orthometric    <td>    <td>    <td>dynamic    <td>normal    <td>    <td>    <td>
-<tr><th>2    <td>latitude    <td>20    <td>89.46    <td>981111.13    <td>0.62    <td>=(E3-E2)<em>(C3+C2)    <td>=F2/(2</em>$B$1)    <td>    <td>=(AVERAGE(D2:D3)-$B$1)/$B$1<em>(C3-C2)    <td>=$B$1 - (0.15438 - 0.00022 </em> SIN((90-$B$2)/180<em>PI())^2)</em>C2 + 0.00000018 <em> C2^2    <td>=D2+0.0424</em>C2    <td>=K2-J2    <td>=L2<em>C2/K2
-<tr><th>3    <td>f    <td>    <td>132.16    <td>981101.88    <td>-0.21    <td>=(E4-E3)</em>(C4+C3)    <td>=F3/(2<em>$B$1)    <td>    <td>=(AVERAGE(D3:D4)-$B$1)/$B$1</em>(C4-C3)    <td>    <td>    <td>    <td>
-<tr><th>4    <td>    <td>    <td>137.1    <td>981101.31    <td>0.19    <td>=(E5-E4)<em>(C5+C4)    <td>=F4/(2</em>$B$1)    <td>    <td>=(AVERAGE(D4:D5)-$B$1)/$B$1<em>(C5-C4)    <td>    <td>    <td>    <td>
-<tr><th>5    <td>    <td>    <td>131.81    <td>981103.16    <td>1    <td>=(E6-E5)</em>(C6+C5)    <td>=F5/(2<em>$B$1)    <td>    <td>=(AVERAGE(D5:D6)-$B$1)/$B$1</em>(C6-C5)    <td>    <td>    <td>    <td>
-<tr><th>6    <td>    <td>    <td>183.22    <td>981090.59    <td>-1.45    <td>=(E7-E6)<em>(C7+C6)    <td>=F6/(2</em>$B$1)    <td>    <td>=(AVERAGE(D6:D7)-$B$1)/$B$1<em>(C7-C6)    <td>    <td>    <td>    <td>
-<tr><th>7    <td>    <td>    <td>188.31    <td>981092.1    <td>1.07    <td>=(E8-E7)</em>(C8+C7)    <td>=F7/(2<em>$B$1)    <td>    <td>=(AVERAGE(D7:D8)-$B$1)/$B$1</em>(C8-C7)    <td>    <td>    <td>    <td>
-<tr><th>8    <td>    <td>    <td>213.1    <td>981084.51    <td>-1.64    <td>    <td>    <td>    <td>    <td>=$B$1 - (0.15438 - 0.00022 <em> SIN((90-$B$2)/180</em>PI())^2)<em>C8 + 0.00000018 </em> C8^2    <td>=D8+0.0424<em>C8    <td>=K8-J8    <td>=L8</em>C8/K8
-<tr><th>9    <td>    <td>    <td>    <td>    <td>    <td>=SUM(F2:F8)    <td>=SUM(G2:G8)    <td>=(0.05595/$B$1)*(C$8^2-C$2^2) - G2    <td>=SUM(I2:I7)    <td>=H9    <td>    <td>    <td>=$H$9+M$8-M$2
+<thead>
+<tr>
+<th>水準高</th>
+<th>重力加速度 (mgal)</th>
+<th>重力異常 (mgal)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>89.46</td>
+<td>981111.13</td>
+<td>0.62</td>
+</tr>
+<tr>
+<td>132.16</td>
+<td>981101.88</td>
+<td>-0.21</td>
+</tr>
+<tr>
+<td>137.10</td>
+<td>981101.31</td>
+<td>0.19</td>
+</tr>
+<tr>
+<td>131.81</td>
+<td>981103.16</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>183.22</td>
+<td>981090.59</td>
+<td>-1.45</td>
+</tr>
+<tr>
+<td>188.31</td>
+<td>981092.10</td>
+<td>1.07</td>
+</tr>
+<tr>
+<td>213.10</td>
+<td>981084.51</td>
+<td>-1.64</td>
+</tr>
+</tbody>
 </table>
 <h3>正高改正</h3>
-<pre><code>.EQ
-OC =
-0.05595 over gamma sub R
-( H sup 2 sub end - H sup 2 sub begin ) -
-1 over { 2 gamma sub R }
-Sigma from { i = 1 } to { n - 1 }
-{
-( Delta g sub { i + 1 } - Delta g sub i )
-( H sub i + H sub { i + 1 } )
-} = 0.0022270067 m
-.EN
-</code></pre><math><mrow><mi>O</mi><mi>C</mi><mo>&equals;</mo><mfrac><mrow><mn>0</mn><mo>.</mo><mn>0</mn><mn>5</mn><mn>5</mn><mn>9</mn><mn>5</mn></mrow><msub><mo>&gamma;</mo><mi>R</mi></msub></mfrac><mo>(</mo><msup><mi>H</mi><msub><mn>2</mn><mrow><mi>e</mi><mi>n</mi><mi>d</mi></mrow></msub></msup><mo>&minus;</mo><msup><mi>H</mi><msub><mn>2</mn><mrow><mi>b</mi><mi>e</mi><mi>g</mi><mi>i</mi><mi>n</mi></mrow></msub></msup><mo>)</mo><mo>&minus;</mo><mfrac><mn>1</mn><mrow><mn>2</mn><msub><mo>&gamma;</mo><mi>R</mi></msub></mrow></mfrac><munderover><mo>&Sigma;</mo><mrow><mi>i</mi><mo>&equals;</mo><mn>1</mn></mrow><mrow><mi>n</mi><mo>&minus;</mo><mn>1</mn></mrow></munderover><mo>(</mo><mo>&Delta;</mo><msub><mi>g</mi><mrow><mi>i</mi><mo>&plus;</mo><mn>1</mn></mrow></msub><mo>&minus;</mo><mo>&Delta;</mo><msub><mi>g</mi><mi>i</mi></msub><mo>)</mo><mo>(</mo><msub><mi>H</mi><mi>i</mi></msub><mo>&plus;</mo><msub><mi>H</mi><mrow><mi>i</mi><mo>&plus;</mo><mn>1</mn></mrow></msub><mo>)</mo><mo>&equals;</mo><mn>0</mn><mo>.</mo><mn>0</mn><mn>0</mn><mn>2</mn><mn>2</mn><mn>2</mn><mn>7</mn><mn>0</mn><mn>0</mn><mn>6</mn><mn>7</mn><mi>m</mi></mrow></math>
+<math><mrow><mi>O</mi><mi>C</mi><mo>&equals;</mo><mfrac><mrow><mn>0</mn><mo>.</mo><mn>0</mn><mn>5</mn><mn>5</mn><mn>9</mn><mn>5</mn></mrow><msub><mo>&gamma;</mo><mi>R</mi></msub></mfrac><mo>(</mo><msup><mi>H</mi><msub><mn>2</mn><mrow><mi>e</mi><mi>n</mi><mi>d</mi></mrow></msub></msup><mo>&minus;</mo><msup><mi>H</mi><msub><mn>2</mn><mrow><mi>b</mi><mi>e</mi><mi>g</mi><mi>i</mi><mi>n</mi></mrow></msub></msup><mo>)</mo><mo>&minus;</mo><mfrac><mn>1</mn><mrow><mn>2</mn><msub><mo>&gamma;</mo><mi>R</mi></msub></mrow></mfrac><munderover><mo>&Sigma;</mo><mrow><mi>i</mi><mo>&equals;</mo><mn>1</mn></mrow><mrow><mi>n</mi><mo>&minus;</mo><mn>1</mn></mrow></munderover><mo>(</mo><mo>&Delta;</mo><msub><mi>g</mi><mrow><mi>i</mi><mo>&plus;</mo><mn>1</mn></mrow></msub><mo>&minus;</mo><mo>&Delta;</mo><msub><mi>g</mi><mi>i</mi></msub><mo>)</mo><mo>(</mo><msub><mi>H</mi><mi>i</mi></msub><mo>&plus;</mo><msub><mi>H</mi><mrow><mi>i</mi><mo>&plus;</mo><mn>1</mn></mrow></msub><mo>)</mo><mo>&equals;</mo><mn>0</mn><mo>.</mo><mn>0</mn><mn>0</mn><mn>2</mn><mn>2</mn><mn>2</mn><mn>7</mn><mn>0</mn><mn>0</mn><mn>6</mn><mn>7</mn><mi>m</mi></mrow></math>
 
 <h3>力高改正</h3>
-<pre><code>.EQ
-DC sub { A B } =
-Sigma from A to B {
-{ g sub i - gamma sub R } over gamma sub R
-delta n sub i } = -0.0037686886 m
-.EN
-</code></pre><math><mrow><mi>D</mi><msub><mi>C</mi><mrow><mi>A</mi><mi>B</mi></mrow></msub><mo>&equals;</mo><munderover><mo>&Sigma;</mo><mi>A</mi><mi>B</mi></munderover><mfrac><mrow><msub><mi>g</mi><mi>i</mi></msub><mo>&minus;</mo><msub><mo>&gamma;</mo><mi>R</mi></msub></mrow><msub><mo>&gamma;</mo><mi>R</mi></msub></mfrac><mo>&delta;</mo><msub><mi>n</mi><mi>i</mi></msub><mo>&equals;</mo><mo>&minus;</mo><mn>0</mn><mo>.</mo><mn>0</mn><mn>0</mn><mn>3</mn><mn>7</mn><mn>6</mn><mn>8</mn><mn>6</mn><mn>8</mn><mn>8</mn><mn>6</mn><mi>m</mi></mrow></math>
+<math><mrow><mi>D</mi><msub><mi>C</mi><mrow><mi>A</mi><mi>B</mi></mrow></msub><mo>&equals;</mo><munderover><mo>&Sigma;</mo><mi>A</mi><mi>B</mi></munderover><mfrac><mrow><msub><mi>g</mi><mi>i</mi></msub><mo>&minus;</mo><msub><mo>&gamma;</mo><mi>R</mi></msub></mrow><msub><mo>&gamma;</mo><mi>R</mi></msub></mfrac><mo>&delta;</mo><msub><mi>n</mi><mi>i</mi></msub><mo>&equals;</mo><mo>&minus;</mo><mn>0</mn><mo>.</mo><mn>0</mn><mn>0</mn><mn>3</mn><mn>7</mn><mn>6</mn><mn>8</mn><mn>6</mn><mn>8</mn><mn>8</mn><mn>6</mn><mi>m</mi></mrow></math>
 
 <h3>正常高改正</h3>
-<pre><code>.EQ
-NC sub { A B } =
-OC sub { A B } +
-( { delta sub B H sub B } over { { gamma sub B } bar } -
-{ delta sub A H sub A } over { { gamma sub A } bar } ) =
-0.0017978974 m
-.EN
-</code></pre><math><mrow><mi>N</mi><msub><mi>C</mi><mrow><mi>A</mi><mi>B</mi></mrow></msub><mo>&equals;</mo><mi>O</mi><msub><mi>C</mi><mrow><mi>A</mi><mi>B</mi></mrow></msub><mo>&plus;</mo><mo>(</mo><mfrac><mrow><msub><mo>&delta;</mo><mi>B</mi></msub><msub><mi>H</mi><mi>B</mi></msub></mrow><mover accent='false'><msub><mo>&gamma;</mo><mi>B</mi></msub><mo>&macr;</mo></mover></mfrac><mo>&minus;</mo><mfrac><mrow><msub><mo>&delta;</mo><mi>A</mi></msub><msub><mi>H</mi><mi>A</mi></msub></mrow><mover accent='false'><msub><mo>&gamma;</mo><mi>A</mi></msub><mo>&macr;</mo></mover></mfrac><mo>)</mo><mo>&equals;</mo><mn>0</mn><mo>.</mo><mn>0</mn><mn>0</mn><mn>1</mn><mn>7</mn><mn>9</mn><mn>7</mn><mn>8</mn><mn>9</mn><mn>7</mn><mn>4</mn><mi>m</mi></mrow></math>
+<math><mrow><mi>N</mi><msub><mi>C</mi><mrow><mi>A</mi><mi>B</mi></mrow></msub><mo>&equals;</mo><mi>O</mi><msub><mi>C</mi><mrow><mi>A</mi><mi>B</mi></mrow></msub><mo>&plus;</mo><mo>(</mo><mfrac><mrow><msub><mo>&delta;</mo><mi>B</mi></msub><msub><mi>H</mi><mi>B</mi></msub></mrow><mover accent='false'><msub><mo>&gamma;</mo><mi>B</mi></msub><mo>&macr;</mo></mover></mfrac><mo>&minus;</mo><mfrac><mrow><msub><mo>&delta;</mo><mi>A</mi></msub><msub><mi>H</mi><mi>A</mi></msub></mrow><mover accent='false'><msub><mo>&gamma;</mo><mi>A</mi></msub><mo>&macr;</mo></mover></mfrac><mo>)</mo><mo>&equals;</mo><mn>0</mn><mo>.</mo><mn>0</mn><mn>0</mn><mn>1</mn><mn>7</mn><mn>9</mn><mn>7</mn><mn>8</mn><mn>9</mn><mn>7</mn><mn>4</mn><mi>m</mi></mrow></math>
 
 <h3>試算表</h3>
 <p>用試算表算的，下面是計算過程：</p>
