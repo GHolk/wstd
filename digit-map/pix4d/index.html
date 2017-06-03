@@ -1,0 +1,139 @@
+﻿<!DOCTYPE HTML>
+<html lang="zh-TW" prefix="og: http://ogp.me/ns#">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="UTF-8">
+<meta name="author" property="og:article:author" content="c34031328">
+<meta name="copyright" content="Common Creative, by c34031328">
+<meta name="generator" content="vim">
+<!-- 以上一般不用改，以下才要改。 -->
+
+<!-- 後設資料 -->
+<meta name="date" property="og:article:public_time" content="">
+<meta name="keywords" property="og:article:tag" content="">
+
+<!-- 和網頁位置有關 -->
+<link rel="stylesheet" type="text/css" href="https://gholk.github.io/ext/word.css">
+
+<title></title>
+</head>
+<body>
+<main>
+</main>
+
+<pre class="markdown raw">
+# Pix4DMapper #
+
+Pix4DMapper是處理航拍影像成點雲、建立模型的專有軟體。
+該軟體為一步一步式的操作，開始於解算內外方位參數，
+產出點雲，並可以在軟體內數化、建立模型。
+
+由於pix4d為專有軟體要購買，且處理需要進行大量圖形運算，
+本實習統一使用實驗室內一台授權電腦。
+該電腦內已經裝好pix4d，
+且配備有多張顯示卡，處理影像相對快速；
+但耗時的部驟仍需近一小時完成。
+
+
+## 建立專案 ##
+
+ 1. 開啟pix4Dmaper，選擇專案儲存位置。
+ 2. 讀入無人機拍攝的航高80m、120m影像。
+ 3. 記錯了，80m才是傾斜攝影影像，
+    就將錯就錯，看看傾斜攝影能不能做吧。
+ 4. 修改專案座標系統為TWD97。
+    注意是專案座標非影像座標，影像座標為預設的WGS84。
+ 5. 選擇出輸成果3D Map。
+
+
+## 特徵點匹配 ##
+
+首先pix4d會在影像中搜尋特徵點，
+確定相機的內外方位參數。
+但這裡為了快速，只做快速匹配。
+快速匹配約耗時二十分鐘。
+
+ 1. 打開選單列上的 `process > processing option` ，調整處理設定。
+ 2. 左側只勾選 `initial processing` ，否則pix4d會把所有部驟都跑完。
+ 3. 選擇 `key point image scale` 為 `rapid` ，只做簡單的匹配。
+ 4. 點擊螢幕左下方的 `process` 按鈕後出現處理進度條，按 `start` 開始匹配。
+
+    ![after click process button](process_button.png)
+
+ 5. 結果可以看到， 100 公尺航拍的相機是斜的。
+
+    ![處理結果中有斜的相機](angle_init_type_point.png)
+
+
+## 控制點 ##
+
+再來要匯入控制點，如果前一步驟有位置錯誤，通常匯入控制點後就能改善。
+
+ 1. `Project > GCP/MTP manager` 開啟控制點管理員。
+
+ 2. Import匯入控制點檔案。
+
+ 3. 使用basic editor在每張控制點出現的照片內，點出該點位置。
+    每點會出現在多張照片內，點一張或以上即可。
+    至少需要三個點，才能確定X Y Z位置。
+
+    我自己點了四個點，每個點二到五張。
+    要對照點之記才能順利的找到點在影像中的位置，
+    我自己感覺要找得到，要是有一定面積的地物；
+    立可白太小了，根本看不見。
+    有些拿人行道石磚縫的，因為太多磚，
+    也很難分辨到底是哪一塊，根本找不到。
+
+ 4. 標記足夠控制點後，即可重新平差計算座標，
+    工具列中 `process > reposition` 。
+
+
+## 檢核 ##
+
+### 設置檢核點 ###
+
+一樣開啟 `GCP/MTP manager` ，選擇數點作為檢核點。
+點選 `type` ，選取為 `check point` 。
+
+再 `reposition` 一次，查看報表，
+若未通過進行下面的 **調整對位** 部驟。
+
+
+### 調整對位 ###
+
+主畫面中精度合乎標準會顯示深藍色，
+誤差較大的則顯示淺藍色。
+
+點選淺藍色的點後，在右下角會出現該點在各相片中的位置。
+若有偏移的，就拖拉到正確的位置上即可。
+
+不確定要調整多少張，我是淺藍色各點每張都確認過，
+沒有偏差太大。
+最後再 `reposition` 一次，若仍未通過，
+就繼續調整對位。
+
+
+## 密集點雲 ##
+
+開啟 `process option` ，勾選 `point cloud` ，
+
+## 數化 ##
+
+pix4d 內有工具可以數化，本次只數化平面。
+開啟左上角平面數化工具後，
+左鍵增加端點，右鍵閉合平面。
+
+數化時要注意是平
+
+平面閉合後，可
+
+</pre>
+
+<footer></footer>
+<script src="https://gholk.github.io/ext/luser-meta.js" defer></script>
+<script src="https://gholk.github.io/ext/luser-anchor-qrcode.js" defer></script>
+
+</body>
+</html>
+
+. 
