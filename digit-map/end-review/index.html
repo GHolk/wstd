@@ -1,0 +1,68 @@
+<!DOCTYPE HTML>
+<html lang="zh-TW" prefix="og: http://ogp.me/ns#">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="UTF-8">
+<meta name="author" property="og:article:author" content="c34031328">
+<meta name="copyright" content="Common Creative, by c34031328">
+<meta name="generator" content="vim">
+<!-- 以上一般不用改，以下才要改。 -->
+
+<!-- 後設資料 -->
+<meta name="date" property="og:article:public_time" content="2017-06-07"> 
+<meta name="keywords" property="og:article:tag" content="digital-map,gis,question-answer">
+
+<!-- 和網頁位置有關 -->
+<link rel="stylesheet" type="text/css" href="https://gholk.github.io/ext/word.css">
+
+<title></title>
+</head>
+<body>
+<main>
+</main>
+
+<pre class="markdown raw">
+# 數值製圖 期末作業 #
+
+## 等高線數化 ##
+今有五千分之一等高線線繪圖大小約 A4、一台 300 dpi 平台式掃描儀、一台
+Calcomp 1000 dpi 數化板,請問你要採用數化法或掃描法產生等高線 GIS 圖與
+DTM?請詳細說明處理流程,並說明 DTM 成果可能誤差來源與大小?
+
+個人沒有使用過數化板，如果有手冊可以嘗試看看。
+會使用掃描儀掃成圖片，依 [作業一數化等高線][] 的流程處理；
+這裡只列出大綱：
+
+[作業一數化等高線]: ../
+
+ 1. 使用平台式掃描儀掃描原圖為影像檔，
+    若紙圖過大無法一次掃描，則分成幾個部份掃。
+
+ 2. 將影像檔讀取到 GIS 軟體內，
+    並以其中網格點進行幾何改正，消除掃描可能造成的誤差。
+    若有多個部份，也在此時一同匯入到 GIS 軟體內改正。
+
+ 3. 匯出成完整的地圖影像檔，使用影像處理軟體如 GIMP 處理。
+    因為等高線顏色相同，使用依顏色選取即可選取出等高線，
+    匯出一張只有等高線的影像。
+
+ 4. 使用 autotrace 或其它將點陣圖轉為向量圖的軟體，
+    將等高線點陣圖轉為向量圖。
+
+    這步可能會使點陣圖的位置資訊遺失，如果要保險，
+    可以在上一步保留等高線外也保留方格網。
+
+ 5. 將向量圖匯回 GIS 軟體內，並手動為每條等高線標上高程。
+    若向量圖沒有位置資訊，可以利用方格網再進行對位一次。
+
+ 6. 使用內差工具，由等高線內插出 DTM 。
+
+</pre>
+
+<footer></footer>
+<script src="https://gholk.github.io/ext/luser-meta.js" defer></script>
+<script src="https://gholk.github.io/ext/luser-anchor-qrcode.js" defer></script>
+
+</body>
+</html>
+

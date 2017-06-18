@@ -1,4 +1,4 @@
-﻿<!DOCTYPE HTML>
+<!DOCTYPE HTML>
 <html lang="zh-TW" prefix="og: http://ogp.me/ns#">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -9,58 +9,197 @@
 <!-- 以上一般不用改，以下才要改。 -->
 
 <!-- 後設資料 -->
-<meta name="date" property="og:article:public_time" content="">
-<meta name="keywords" property="og:article:tag" content="">
+<meta name="date" property="og:article:public_time" content="2017-06-03">
+<meta name="keywords" property="og:article:tag" content="digital-map,arc scene,px4d,photogrammetry,point cloud">
 
 <!-- 和網頁位置有關 -->
 <link rel="stylesheet" type="text/css" href="https://gholk.github.io/ext/word.css">
 
-<title></title>
+<title>Pix4DMapper 3D 製圖</title>
 </head>
 <body>
 <main>
+<h1>Pix4DMapper</h1>
+<p>Pix4DMapper 是處理航拍影像成點雲、建立模型的專有軟體。
+該軟體為一步一步式的操作，開始於解算內外方位參數，
+產出點雲，並可以在軟體內數化、建立模型。</p>
+<p>由於 pix4d 為專有軟體要購買，且處理需要進行大量圖形運算，
+本實習統一使用實驗室內一台授權電腦。
+該電腦內已經裝好 pix4d，
+且配備有多張顯示卡，處理影像相對快速；
+但耗時的部驟仍需近一小時完成。</p>
+<h2>建立專案</h2>
+<ol>
+<li>開啟 pix4Dmaper，選擇專案儲存位置。</li>
+<li>讀入無人機拍攝的航高 80m、120m 影像。</li>
+<li>記錯了，80m 才是傾斜攝影影像，
+就將錯就錯，看看傾斜攝影能不能做吧。</li>
+<li>修改專案座標系統為 TWD97。
+注意是專案座標非影像座標，影像座標為預設的 WGS84。</li>
+<li>選擇出輸成果 3D Map。</li>
+</ol>
+<h2>特徵點匹配</h2>
+<p>首先 pix4d 會在影像中搜尋特徵點，
+確定相機的內外方位參數。
+但這裡為了快速，只做快速匹配。
+快速匹配約耗時二十分鐘。</p>
+<ol>
+<li>打開選單列上的 <code>process &gt; processing option</code> ，調整處理設定。</li>
+<li>左側只勾選 <code>initial processing</code> ，否則 pix4d 會把所有部驟都跑完。</li>
+<li>選擇 <code>key point image scale</code> 為 <code>rapid</code> ，只做簡單的匹配。</li>
+<li><p>點擊螢幕左下方的 <code>processing</code> 按鈕後出現處理進度條，按 <code>start</code> 開始匹配。</p>
+<p><img src="process_button.png" alt="after click process button"></p>
+</li>
+<li><p>結果可以看到，100 公尺航拍的相機是斜的。</p>
+<p><img src="angle_init_type_point.png" alt="處理結果中有斜的相機"></p>
+</li>
+</ol>
+<h2>控制點</h2>
+<p>再來要匯入控制點，如果前一步驟有位置錯誤，通常匯入控制點後就能改善。</p>
+<ol>
+<li><p><code>Project &gt; GCP/MTP manager</code> 開啟控制點管理員。</p>
+</li>
+<li><p>Import 匯入控制點檔案。</p>
+</li>
+<li><p>使用 basic editor 在每張控制點出現的照片內，點出該點位置。
+每點會出現在多張照片內，點一張或以上即可。
+至少需要三個點，才能確定 X Y Z 位置。</p>
+<p>我自己點了四個點，每個點二到五張。
+要對照點之記才能順利的找到點在影像中的位置，
+我自己感覺要找得到，要是有一定面積的地物；
+立可白太小了，根本看不見。
+有些拿人行道石磚縫的，因為太多磚，
+也很難分辨到底是哪一塊，根本找不到。</p>
+</li>
+<li><p>標記足夠控制點後，即可重新平差計算座標，
+工具列中 <code>process &gt; reposition</code> 。</p>
+</li>
+</ol>
+<h2>檢核</h2>
+<h3>設置檢核點</h3>
+<p>一樣開啟 <code>GCP/MTP manager</code> ，選擇數點作為檢核點。
+點選 <code>type</code> ，選取為 <code>check point</code> 。</p>
+<p>再 <code>reposition</code> 一次，查看報表，
+若未通過進行下面的 <strong>調整對位</strong> 部驟。</p>
+<h3>調整對位</h3>
+<p>主畫面中精度合乎標準會顯示深藍色，
+誤差較大的則顯示淺藍色。</p>
+<p>點選淺藍色的點後，在右下角會出現該點在各相片中的位置。
+若有偏移的，就拖拉到正確的位置上即可。</p>
+<p>不確定要調整多少張，我是淺藍色各點每張都確認過，
+沒有偏差太大。
+最後再 <code>reposition</code> 一次，若仍未通過，
+就繼續調整對位。</p>
+<h2>密集點雲</h2>
+<p>開啟 <code>process option</code> ，勾選 <code>point cloud</code> ，
+後和 <strong>特徵點匹配</strong> 一樣，
+點選左下角 <code>process</code> 後 <code>start</code> ，
+這個大概要一個小時。</p>
+<h2>數化</h2>
+<p>點雲出來後就能在點雲上數化了。
+pix4d 內有工具可以數化，本次只數化平面。</p>
+<p>開啟左上角平面數化工具後，
+左鍵增加端點，右鍵閉合平面。</p>
+<p>數化時要注意是端點只能點在點雲上，
+在邊緣時容易點到外面去，
+建議轉多個角度，確定後再點。</p>
+<p>平面閉合後可以選取錯誤的點，
+在右下角的視窗修改。
+和之前修控制點時類似，
+點擊該點在該影像中的位置，
+點越多張越準。</p>
+<h3>雲平大樓</h3>
+<p>我被分配到數化雲平大樓。
+雲平大樓的空照不太規則，
+有好幾面屋頂，和低樓層突出的陽台。</p>
+<p>屋頂上有女兒牆，
+我數化時是將平面放在女兒牆上，
+較屋頂地面高出一二公尺。
+因為建物最外圍為女兒牆，
+數化在女兒牆上較方便。</p>
+<p>另外有數化雲平中庭的廣場，
+較地面高出數公尺。</p>
+<h3>匯出</h3>
+<p>點選右上角圖層清單中的 <code>surface</code> ，
+右鍵可以一次匯出所有平面成二個 shape file，
+分別是面圖層與點圖層，面圖層是被壓平的，
+而點圖層中每個點都有自己的三維座標。</p>
+<h2>產生 DSM</h2>
+<p><code>process option</code> 勾選第三項，
+之後和產生密集點雲一樣，大概幾十分鐘。</p>
+<p>檔案輸出到專案資料夾
+<code>03_dsm/orthogonal</code> 裡一個 <code>tiff</code> 檔。</p>
+<h2>Arc scene 展示 3D 模型</h2>
+<p>Arc scene 操作類似 Arcgis，
+加入數化匯出的 shp 檔後，
+預設是展示為沒有牆面的面，
+看起像一堆屋頂浮在空中。</p>
+<p>右側 content table 裡對該圖層右鍵
+<code>properties &gt; extrusion</code> ，
+選單列選取最後一項，開啟拉伸功能。
+即出現牆面。
+拉伸功能參考自 <a href="http://desktop.arcgis.com/en/arcmap/latest/extensions/3d-analyst/about-using-extrusion-as-3d-symbology.htm">Arcgis 官方網站</a> 。</p>
+<p><code>properties &gt; base height</code> 可以設定 offset，
+由於該 DEM 地表約在 13m 處，
+這裡設定 offset 為 -13，所有高度降低 13m。</p>
+<p><img src="yunping.png" alt="arc scene 中的雲平模型"></p>
+<h3>Arc scene 展示 DSM</h3>
+<p>開啟 tif <code>properties &gt; base height</code>
+可以設定將 tif 視為高程資料展示。</p>
+<p><img src="all_raster.png" alt="和 DSM 疊合的雲平模型"></p>
+<h2>tiff 轉換為 jpg</h2>
+<p>要上傳報告時，因為太大 moodle 不給傳，
+只好想辦法把 tiff 轉成 jpg。
+在 linux 下安裝 gdal 即可。</p>
+<pre><code>gdal_translate \
+    -of JPEG -scale -co worldfile=yes \
+    c34031328_dsm.tif c34031328_dsm.jpg
+</code></pre><p>結果為 <code>c34031328_dsm.jpg</code> 圖片檔及
+<code>c34031328_dsm.jpg.aux.xml</code> 地理資訊檔。
+轉換過程由於 jpg 的亮度值只能是整數，
+且是破壞性壓縮，大量減少檔案大小同時也會失真。</p>
 </main>
 
 <pre class="markdown raw">
 # Pix4DMapper #
 
-Pix4DMapper是處理航拍影像成點雲、建立模型的專有軟體。
+Pix4DMapper 是處理航拍影像成點雲、建立模型的專有軟體。
 該軟體為一步一步式的操作，開始於解算內外方位參數，
 產出點雲，並可以在軟體內數化、建立模型。
 
-由於pix4d為專有軟體要購買，且處理需要進行大量圖形運算，
+由於 pix4d 為專有軟體要購買，且處理需要進行大量圖形運算，
 本實習統一使用實驗室內一台授權電腦。
-該電腦內已經裝好pix4d，
+該電腦內已經裝好 pix4d，
 且配備有多張顯示卡，處理影像相對快速；
 但耗時的部驟仍需近一小時完成。
 
 
 ## 建立專案 ##
 
- 1. 開啟pix4Dmaper，選擇專案儲存位置。
- 2. 讀入無人機拍攝的航高80m、120m影像。
- 3. 記錯了，80m才是傾斜攝影影像，
+ 1. 開啟 pix4Dmaper，選擇專案儲存位置。
+ 2. 讀入無人機拍攝的航高 80m、120m 影像。
+ 3. 記錯了，80m 才是傾斜攝影影像，
     就將錯就錯，看看傾斜攝影能不能做吧。
- 4. 修改專案座標系統為TWD97。
-    注意是專案座標非影像座標，影像座標為預設的WGS84。
- 5. 選擇出輸成果3D Map。
+ 4. 修改專案座標系統為 TWD97。
+    注意是專案座標非影像座標，影像座標為預設的 WGS84。
+ 5. 選擇出輸成果 3D Map。
 
 
 ## 特徵點匹配 ##
 
-首先pix4d會在影像中搜尋特徵點，
+首先 pix4d 會在影像中搜尋特徵點，
 確定相機的內外方位參數。
 但這裡為了快速，只做快速匹配。
 快速匹配約耗時二十分鐘。
 
- 1. 打開選單列上的 `process > processing option` ，調整處理設定。
- 2. 左側只勾選 `initial processing` ，否則pix4d會把所有部驟都跑完。
+ 1. 打開選單列上的 `process &gt; processing option` ，調整處理設定。
+ 2. 左側只勾選 `initial processing` ，否則 pix4d 會把所有部驟都跑完。
  3. 選擇 `key point image scale` 為 `rapid` ，只做簡單的匹配。
- 4. 點擊螢幕左下方的 `process` 按鈕後出現處理進度條，按 `start` 開始匹配。
+ 4. 點擊螢幕左下方的 `processing` 按鈕後出現處理進度條，按 `start` 開始匹配。
 
     ![after click process button](process_button.png)
 
- 5. 結果可以看到， 100 公尺航拍的相機是斜的。
+ 5. 結果可以看到，100 公尺航拍的相機是斜的。
 
     ![處理結果中有斜的相機](angle_init_type_point.png)
 
@@ -69,13 +208,13 @@ Pix4DMapper是處理航拍影像成點雲、建立模型的專有軟體。
 
 再來要匯入控制點，如果前一步驟有位置錯誤，通常匯入控制點後就能改善。
 
- 1. `Project > GCP/MTP manager` 開啟控制點管理員。
+ 1. `Project &gt; GCP/MTP manager` 開啟控制點管理員。
 
- 2. Import匯入控制點檔案。
+ 2. Import 匯入控制點檔案。
 
- 3. 使用basic editor在每張控制點出現的照片內，點出該點位置。
+ 3. 使用 basic editor 在每張控制點出現的照片內，點出該點位置。
     每點會出現在多張照片內，點一張或以上即可。
-    至少需要三個點，才能確定X Y Z位置。
+    至少需要三個點，才能確定 X Y Z 位置。
 
     我自己點了四個點，每個點二到五張。
     要對照點之記才能順利的找到點在影像中的位置，
@@ -85,7 +224,7 @@ Pix4DMapper是處理航拍影像成點雲、建立模型的專有軟體。
     也很難分辨到底是哪一塊，根本找不到。
 
  4. 標記足夠控制點後，即可重新平差計算座標，
-    工具列中 `process > reposition` 。
+    工具列中 `process &gt; reposition` 。
 
 
 ## 檢核 ##
@@ -116,16 +255,107 @@ Pix4DMapper是處理航拍影像成點雲、建立模型的專有軟體。
 ## 密集點雲 ##
 
 開啟 `process option` ，勾選 `point cloud` ，
+後和 **特徵點匹配** 一樣，
+點選左下角 `process` 後 `start` ，
+這個大概要一個小時。
+
 
 ## 數化 ##
 
+點雲出來後就能在點雲上數化了。
 pix4d 內有工具可以數化，本次只數化平面。
+
 開啟左上角平面數化工具後，
 左鍵增加端點，右鍵閉合平面。
 
-數化時要注意是平
+數化時要注意是端點只能點在點雲上，
+在邊緣時容易點到外面去，
+建議轉多個角度，確定後再點。
 
-平面閉合後，可
+平面閉合後可以選取錯誤的點，
+在右下角的視窗修改。
+和之前修控制點時類似，
+點擊該點在該影像中的位置，
+點越多張越準。
+
+
+### 雲平大樓 ###
+
+我被分配到數化雲平大樓。
+雲平大樓的空照不太規則，
+有好幾面屋頂，和低樓層突出的陽台。
+
+屋頂上有女兒牆，
+我數化時是將平面放在女兒牆上，
+較屋頂地面高出一二公尺。
+因為建物最外圍為女兒牆，
+數化在女兒牆上較方便。
+
+另外有數化雲平中庭的廣場，
+較地面高出數公尺。
+
+
+### 匯出 ###
+
+點選右上角圖層清單中的 `surface` ，
+右鍵可以一次匯出所有平面成二個 shape file，
+分別是面圖層與點圖層，面圖層是被壓平的，
+而點圖層中每個點都有自己的三維座標。
+
+
+## 產生 DSM ##
+
+`process option` 勾選第三項，
+之後和產生密集點雲一樣，大概幾十分鐘。
+
+檔案輸出到專案資料夾
+`03_dsm/orthogonal` 裡一個 `tiff` 檔。
+
+
+## Arc scene 展示 3D 模型 ##
+
+Arc scene 操作類似 Arcgis，
+加入數化匯出的 shp 檔後，
+預設是展示為沒有牆面的面，
+看起像一堆屋頂浮在空中。
+
+右側 content table 裡對該圖層右鍵
+`properties &gt; extrusion` ，
+選單列選取最後一項，開啟拉伸功能。
+即出現牆面。
+拉伸功能參考自 [Arcgis 官方網站] 。
+
+[Arcgis 官方網站]: http://desktop.arcgis.com/en/arcmap/latest/extensions/3d-analyst/about-using-extrusion-as-3d-symbology.htm
+
+`properties &gt; base height` 可以設定 offset，
+由於該 DEM 地表約在 13m 處，
+這裡設定 offset 為 -13，所有高度降低 13m。
+
+![arc scene 中的雲平模型](yunping.png)
+
+
+### Arc scene 展示 DSM ###
+
+開啟 tif `properties &gt; base height`
+可以設定將 tif 視為高程資料展示。
+
+![和 DSM 疊合的雲平模型](all_raster.png)
+
+
+## tiff 轉換為 jpg ##
+
+要上傳報告時，因為太大 moodle 不給傳，
+只好想辦法把 tiff 轉成 jpg。
+在 linux 下安裝 gdal 即可。
+
+    gdal_translate \
+        -of JPEG -scale -co worldfile=yes \
+        c34031328_dsm.tif c34031328_dsm.jpg
+
+結果為 `c34031328_dsm.jpg` 圖片檔及
+`c34031328_dsm.jpg.aux.xml` 地理資訊檔。
+轉換過程由於 jpg 的亮度值只能是整數，
+且是破壞性壓縮，大量減少檔案大小同時也會失真。
 
 </pre>
 
