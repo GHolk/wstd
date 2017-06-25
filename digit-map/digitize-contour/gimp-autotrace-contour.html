@@ -1,0 +1,421 @@
+<!DOCTYPE HTML>
+<html lang="zh-TW" prefix="og: http://ogp.me/ns#">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="UTF-8">
+<meta name="author" property="og:article:author" content="c34031328">
+<meta name="copyright" content="Common Creative">
+<meta name="generator" content="vim, markdown">
+<!-- 以上一般不用改，以下才要改。 -->
+
+<!-- 後設資料 -->
+<meta name="date" property="og:article:public_time" content="2017-03-27">
+<meta name="keywords" property="og:article:tag" content="gis,qgis,gimp,digitize,dtm,georeference">
+
+<!-- 和網頁位置有關 -->
+<link rel="icon" type="image/png" href="ext/icon.png">
+<meta property="og:image" content="ext/icon.png">
+<link rel="stylesheet" type="text/css" href="ext/word.css">
+
+<title> 由地圖等高線產生 DTM </title>
+</head>
+<body>
+<main>
+<h1>由地圖等高線產生 DTM</h1>
+<ul>
+<li>組員：王鼎鈞、魏姬勇、黃楷元、黃紹維、羅漢東</li>
+<li>老師：饒見有</li>
+</ul>
+<p>我們將從一張帶等高線的地圖，
+還原出原始的數值地型模型，
+目標是儘可能的自動化，
+可以用程式處理就用程式處理。</p>
+<ol>
+<li>由紙本掃描成影像檔。</li>
+<li>用影像處理軟體 GIMP 將箤取出等高線的網格影像。</li>
+<li>用軟體 AutoTrace 將等高線網格影像轉成向量資料。</li>
+<li>用 QGIS 為每段等高線標上高程。</li>
+<li>用 QGIS 由線段的高程資料產生 DTM 。</li>
+<li>進行幾何改正，以已改正過的原影像為基準。</li>
+</ol>
+<h2>從紙圖掃描</h2>
+<p>這部份是老師掃描好，直接給我們用，
+就沒有親自處理紙圖、掃描的經驗。
+但因為圖太大，只能分成數個部份掃描，
+總共 8 張影像，影像之間都有重疊。</p>
+<p>其中六張是地圖範圍，二張是地圖的文字說明和圖例。
+文字中可以看到地圖採用的座標是美國的 NAD27 13N ，
+幾何改正時會用到。
+老師只有指定一小區塊要製做 DTM ，
+範圍是九個方格，也就是 9 平方公里。</p>
+<p>另外建議下次散布 tiff 圖檔前要先壓縮，
+因為 tif 是完全未壓縮的圖片格式，檔案很佔空間；
+我們這組在電腦教室下載就花了快十分鐘。
+而且又是放在 google 雲端硬碟，
+如果是放在系上自己的 server 就會比較快，
+或是成大內、學網內也都會快很多。</p>
+<h2>GIMP 箤取等高線</h2>
+<p><a href="http://www.gimp.org">GIMP</a> 是自由的影像處理軟體，
+和 PhotoShop 類似，但不是針對相片。
+我使用她主要依顏色箤取出等高線。</p>
+<p><img src="https://www.gimp.org/images/frontpage/wilber-big.png" alt="gimp-icon"></p>
+<h3>色調分離</h3>
+<p>色調分離是減少圖片色彩的高階工具，
+她會將相近的的顏色統一成同一個顏色
+，達到滅少顏色的目的。</p>
+<p><a data-flickr-embed="true"  href="https://www.flickr.com/photos/135370742@N08/35355360402/in/album-72157659688229849/" title="gimp-toolbar-devide-color"><img src="https://c1.staticflickr.com/5/4262/35355360402_b045f1eaf1_z.jpg" width="640" height="360" alt="gimp-toolbar-devide-color"></a><script async src="//embedr.flickr.com/assets/client-code.js" charset="utf-8"></script></p>
+<p>有兩個顏色要選取，
+分別是 <strong>首曲線</strong> 的暗紅色，和 <strong>計曲線</strong> 的粉紅色。
+試驗後發現減少到 6 個顏色是最好的狀態，
+再少會把非等高線的也歸到同一顏色，
+再多則會把同一等高線的亮暗分成不同顏色。</p>
+<p><a data-flickr-embed="true"  href="https://www.flickr.com/photos/135370742@N08/35355361472/in/album-72157659688229849/" title="gimp-devide-color-6"><img src="https://c1.staticflickr.com/5/4290/35355361472_07751c616c_z.jpg" width="640" height="360" alt="gimp-devide-color-6"></a><script async src="//embedr.flickr.com/assets/client-code.js" charset="utf-8"></script></p>
+<h3>選取和匯出</h3>
+<p>再來使用 <strong>依顏色選取工具</strong> 選取粉紅色的計曲線，</p>
+<p><a data-flickr-embed="true"  href="https://www.flickr.com/photos/135370742@N08/35355360832/in/album-72157659688229849/" title="gimp-select-by-color-tool"><img src="https://c1.staticflickr.com/5/4209/35355360832_805477acc3_z.jpg" width="640" height="360" alt="gimp-select-by-color-tool"></a><script async src="//embedr.flickr.com/assets/client-code.js" charset="utf-8"></script></p>
+<p>再使用 <strong>反選</strong> 功能，選擇整張圖不包含計曲線的範圍，
+使用刪除工具刪除。</p>
+<p><a data-flickr-embed="true"  href="https://www.flickr.com/photos/135370742@N08/35355360642/in/album-72157659688229849/" title="gimp-select-invert-tool"><img src="https://c1.staticflickr.com/5/4232/35355360642_edbeed2eae_z.jpg" width="640" height="360" alt="gimp-select-invert-tool"></a><script async src="//embedr.flickr.com/assets/client-code.js" charset="utf-8"></script></p>
+<p>最後匯出已經只含計曲線的圖片即可。</p>
+<p><a data-flickr-embed="true"  href="https://www.flickr.com/photos/135370742@N08/35355361152/in/album-72157659688229849/" title="gimp-export-image"><img src="https://c1.staticflickr.com/5/4289/35355361152_4f5f0df91c_z.jpg" width="640" height="360" alt="gimp-export-image"></a><script async src="//embedr.flickr.com/assets/client-code.js" charset="utf-8"></script></p>
+<p>首曲線也是同樣的作法。</p>
+<h3>缺點</h3>
+<p>因為是依顏色選取會有一些誤差。
+像是因為等高線經過森林或潮泊，
+顏色就會不一樣。
+或是因為是點陣圖，深紅區塊的邊緣就會變淺紅，
+就會選到一些莫名奇妙的區域。</p>
+<h2>AutoTrace 向量化</h2>
+<p><a href="http://autotrace.sourceforge.net/">AutoTrace</a> 是一個開源的小程式，
+接受網格圖檔，自動判斷並輸出向量線條。
+他只有提供原始碼，需要手動編譯；
+不確定是否能在 windows 下使用。
+我使用 Debian Linux 作業系統，
+上面有已經編譯好的可以直接用 apt 安裝。</p>
+<pre><code># apt-get install autotrace
+</code></pre><p>她接受的格式只有基本的點陣圖，
+常見的有 windows 的 bmp 和 pdf 內用的 ppm ，
+之前匯出的時候要選好，我是選 ppm 。</p>
+<p>輸出則比較多， svg 和 illustrator 的 ai 都有，
+但要能匯入 GIS 軟體就比較麻煩，
+我選了 AutoCAD 的 dxf 。</p>
+<p>她只有 CLI 介面，有不少參數可以用，
+但我只用最基本的，詳細可以看 man-page 。
+也許參數下的好，可以把過細的線濾掉，
+斷掉的線接起來。</p>
+<pre><code>$ autotrace ppm --output-format dxf \
+     --output-file contour1.dxf \
+     --input-format contour1.ppm
+</code></pre><h2>QGIS 為等高線標上高程</h2>
+<p>QGIS 可以讀 dxf 檔，就直接讀入。
+可以再另存成 shp 檔編修上比較不受限制。</p>
+<p>自動數化的只能遠看，
+近看會發現有不少斷掉的地方，
+或是很多雜訊一起被判斷成等高線。</p>
+<p>我們決定不把等高線弄完整，
+反正要的是 DTM ，不是 <em>完整的等高線</em> ；
+之後產生 DTM 不一定要是完整的線，
+用一段段的線也可以。</p>
+<p>但還是需要高程，
+所以需要手動為每段線段標上高程。
+這部份應該大家都會，
+就先在屬性表格新增一個高程欄位，
+把要改的線段用選取工具選起來，
+再用 <em>update select feature</em> 改線段高程就好了。</p>
+<p>有些線會斷掉，要不要接就看誠意了。
+反正等高線本來就不準，內插也不準，
+一條線那麼長，也不缺那一小段斷掉的。
+多的線就不要標她的高程，
+最後再一次把所有沒高程的線刪掉就好了。</p>
+<h2>內插出 DTM</h2>
+<p>標好高程後就可以開始內插，
+這部份我是看 <a href="http://www.qgistutorials.com/zh_TW/docs/interpolating_point_data.html">教學文</a> 學的。
+其中要注意的是要加入圖層後要選
+<strong>break line</strong> 而不是 <strong>point</strong> ，
+就能用線段內插。
+我有想試過 IDW ，但我的電腦跑 IDW 超慢，就放棄了。</p>
+<p>如果有 <strong>合併</strong> 過線段，要拆開不然會不能內插。
+所謂合併是用 <strong>merge</strong> 合併，
+會讓數條線段共享一個屬性，
+但還是不是 <strong>同一條線段</strong> 。
+要變成同一條只能用 <strong>edit vertex</strong> ，
+一個個加新點，不能用合併的。</p>
+<h2>幾何校正</h2>
+<p>最後才校正的原因是校正後圖會糊掉，
+箤取等高線比較困難。</p>
+<blockquote>
+<p>後來發現圖會糊掉的原因是使用
+thin plate spline 改正，
+這個改正法出來的圖的解析度
+和控制點的數目正相關。
+不是很適合用在地圖的改正。</p>
+</blockquote>
+<h3>校正帶等高線的彩圖</h3>
+<p>首先出圖，出一張連等高線一起的圖，
+有等高線作特徵比較好校正。</p>
+<p><a data-flickr-embed="true"  href="https://www.flickr.com/photos/135370742@N08/35136323340/in/dateposted-public/" title="dtm_lines_composer"><img src="https://c1.staticflickr.com/5/4289/35136323340_f586ac9527_z.jpg" width="640" height="360" alt="dtm_lines_composer"></a><script async src="//embedr.flickr.com/assets/client-code.js" charset="utf-8"></script></p>
+<p>幾何改正這張圖到之前改正過的
+image00004_modify.tif ，
+用其中的等高線作共同點。
+在標記共同點時不直接輸入坐標，
+選擇 <strong>from map canvas</strong> 。</p>
+<p><a data-flickr-embed="true"  href="https://www.flickr.com/photos/135370742@N08/35483625586/in/dateposted-public/" title="georeference-from-map-canvas"><img src="https://c1.staticflickr.com/5/4279/35483625586_5382e141f7_z.jpg" width="640" height="360" alt="georeference-from-map-canvas"></a><script async src="//embedr.flickr.com/assets/client-code.js" charset="utf-8"></script></p>
+<p>在地圖中同一點點一下，即完成一組共同點。</p>
+<p><a data-flickr-embed="true"  href="https://www.flickr.com/photos/135370742@N08/35522780925/in/dateposted-public/" title="georeference-same-map"><img src="https://c1.staticflickr.com/5/4254/35522780925_0cac4feb41_z.jpg" width="640" height="360" alt="georeference-same-map"></a><script async src="//embedr.flickr.com/assets/client-code.js" charset="utf-8"></script></p>
+<p>完成足夠共同點後，設定好校正演算法，
+即可開始校正；校正成果如下圖。</p>
+<p><a data-flickr-embed="true"  href="https://www.flickr.com/photos/135370742@N08/35483626656/in/dateposted-public/" title="georeference-color-contour"><img src="https://c1.staticflickr.com/5/4230/35483626656_377198b60f_z.jpg" width="640" height="359" alt="georeference-color-contour"></a><script async src="//embedr.flickr.com/assets/client-code.js" charset="utf-8"></script></p>
+<h3>校正 DTM 網格資料</h3>
+<p>之後再用這張圖校正之前內插出的網格資料，
+一樣用 georeference ，但這次要用邊界做共同點。</p>
+<p><a data-flickr-embed="true"  href="https://www.flickr.com/photos/135370742@N08/34681406654/in/album-72157659688229849/" title="georeference-dtm-canvas"><img src="https://c1.staticflickr.com/5/4257/34681406654_c50a9c865c_z.jpg" width="640" height="360" alt="georeference-dtm-canvas"></a><script async src="//embedr.flickr.com/assets/client-code.js" charset="utf-8"></script></p>
+<p><a data-flickr-embed="true"  href="https://www.flickr.com/photos/135370742@N08/34681408114/in/album-72157659688229849/" title="georeference-color-contour"><img src="https://c1.staticflickr.com/5/4286/34681408114_0721c5d89f_z.jpg" width="640" height="359" alt="georeference-color-contour"></a><script async src="//embedr.flickr.com/assets/client-code.js" charset="utf-8"></script></p>
+<p>全部完成後以假色表現的的 dtm 。</p>
+<p><a data-flickr-embed="true"  href="https://www.flickr.com/photos/135370742@N08/35355486632/in/album-72157659688229849/" title="dtm_with_map"><img src="https://c1.staticflickr.com/5/4290/35355486632_09a953c41c_z.jpg" width="640" height="453" alt="dtm_with_map"></a><script async src="//embedr.flickr.com/assets/client-code.js" charset="utf-8"></script></p>
+
+
+</main>
+
+<pre class="raw markdown">
+
+由地圖等高線產生 DTM
+====================
+
+  - 組員：王鼎鈞、魏姬勇、黃楷元、黃紹維、羅漢東
+  - 老師：饒見有
+
+我們將從一張帶等高線的地圖，
+還原出原始的數值地型模型，
+目標是儘可能的自動化，
+可以用程式處理就用程式處理。
+
+ 1. 由紙本掃描成影像檔。
+ 2. 用影像處理軟體 GIMP 將箤取出等高線的網格影像。
+ 3. 用軟體 AutoTrace 將等高線網格影像轉成向量資料。
+ 4. 用 QGIS 為每段等高線標上高程。
+ 5. 用 QGIS 由線段的高程資料產生 DTM 。
+ 6. 進行幾何改正，以已改正過的原影像為基準。
+
+
+從紙圖掃描
+----------
+
+這部份是老師掃描好，直接給我們用，
+就沒有親自處理紙圖、掃描的經驗。
+但因為圖太大，只能分成數個部份掃描，
+總共 8 張影像，影像之間都有重疊。
+
+其中六張是地圖範圍，二張是地圖的文字說明和圖例。
+文字中可以看到地圖採用的座標是美國的 NAD27 13N ，
+幾何改正時會用到。
+老師只有指定一小區塊要製做 DTM ，
+範圍是九個方格，也就是 9 平方公里。
+
+另外建議下次散布 tiff 圖檔前要先壓縮，
+因為 tif 是完全未壓縮的圖片格式，檔案很佔空間；
+我們這組在電腦教室下載就花了快十分鐘。
+而且又是放在 google 雲端硬碟，
+如果是放在系上自己的 server 就會比較快，
+或是成大內、學網內也都會快很多。
+
+
+GIMP 箤取等高線
+---------------
+
+[GIMP] 是自由的影像處理軟體，
+和 PhotoShop 類似，但不是針對相片。
+我使用她主要依顏色箤取出等高線。
+
+![gimp-icon]
+
+[GIMP]: http://www.gimp.org
+[gimp-icon]: https://www.gimp.org/images/frontpage/wilber-big.png
+
+
+### 色調分離
+
+色調分離是減少圖片色彩的高階工具，
+她會將相近的的顏色統一成同一個顏色
+，達到滅少顏色的目的。
+
+<a data-flickr-embed="true"  href="https://www.flickr.com/photos/135370742@N08/35355360402/in/album-72157659688229849/" title="gimp-toolbar-devide-color"><img src="https://c1.staticflickr.com/5/4262/35355360402_b045f1eaf1_z.jpg" width="640" height="360" alt="gimp-toolbar-devide-color"></a><script async src="//embedr.flickr.com/assets/client-code.js" charset="utf-8"></script>
+
+
+有兩個顏色要選取，
+分別是 **首曲線** 的暗紅色，和 **計曲線** 的粉紅色。
+試驗後發現減少到 6 個顏色是最好的狀態，
+再少會把非等高線的也歸到同一顏色，
+再多則會把同一等高線的亮暗分成不同顏色。
+
+<a data-flickr-embed="true"  href="https://www.flickr.com/photos/135370742@N08/35355361472/in/album-72157659688229849/" title="gimp-devide-color-6"><img src="https://c1.staticflickr.com/5/4290/35355361472_07751c616c_z.jpg" width="640" height="360" alt="gimp-devide-color-6"></a><script async src="//embedr.flickr.com/assets/client-code.js" charset="utf-8"></script>
+
+
+### 選取和匯出
+
+再來使用 **依顏色選取工具** 選取粉紅色的計曲線，
+
+<a data-flickr-embed="true"  href="https://www.flickr.com/photos/135370742@N08/35355360832/in/album-72157659688229849/" title="gimp-select-by-color-tool"><img src="https://c1.staticflickr.com/5/4209/35355360832_805477acc3_z.jpg" width="640" height="360" alt="gimp-select-by-color-tool"></a><script async src="//embedr.flickr.com/assets/client-code.js" charset="utf-8"></script>
+
+
+再使用 **反選** 功能，選擇整張圖不包含計曲線的範圍，
+使用刪除工具刪除。
+
+<a data-flickr-embed="true"  href="https://www.flickr.com/photos/135370742@N08/35355360642/in/album-72157659688229849/" title="gimp-select-invert-tool"><img src="https://c1.staticflickr.com/5/4232/35355360642_edbeed2eae_z.jpg" width="640" height="360" alt="gimp-select-invert-tool"></a><script async src="//embedr.flickr.com/assets/client-code.js" charset="utf-8"></script>
+
+
+最後匯出已經只含計曲線的圖片即可。
+
+<a data-flickr-embed="true"  href="https://www.flickr.com/photos/135370742@N08/35355361152/in/album-72157659688229849/" title="gimp-export-image"><img src="https://c1.staticflickr.com/5/4289/35355361152_4f5f0df91c_z.jpg" width="640" height="360" alt="gimp-export-image"></a><script async src="//embedr.flickr.com/assets/client-code.js" charset="utf-8"></script>
+
+首曲線也是同樣的作法。
+
+
+### 缺點
+因為是依顏色選取會有一些誤差。
+像是因為等高線經過森林或潮泊，
+顏色就會不一樣。
+或是因為是點陣圖，深紅區塊的邊緣就會變淺紅，
+就會選到一些莫名奇妙的區域。
+
+
+AutoTrace 向量化
+----------------
+
+[AutoTrace] 是一個開源的小程式，
+接受網格圖檔，自動判斷並輸出向量線條。
+他只有提供原始碼，需要手動編譯；
+不確定是否能在 windows 下使用。
+我使用 Debian Linux 作業系統，
+上面有已經編譯好的可以直接用 apt 安裝。
+
+    # apt-get install autotrace
+
+[AutoTrace]: http://autotrace.sourceforge.net/
+
+
+她接受的格式只有基本的點陣圖，
+常見的有 windows 的 bmp 和 pdf 內用的 ppm ，
+之前匯出的時候要選好，我是選 ppm 。
+
+輸出則比較多， svg 和 illustrator 的 ai 都有，
+但要能匯入 GIS 軟體就比較麻煩，
+我選了 AutoCAD 的 dxf 。
+
+她只有 CLI 介面，有不少參數可以用，
+但我只用最基本的，詳細可以看 man-page 。
+也許參數下的好，可以把過細的線濾掉，
+斷掉的線接起來。
+
+    $ autotrace ppm --output-format dxf \
+         --output-file contour1.dxf \
+         --input-format contour1.ppm
+
+
+QGIS 為等高線標上高程
+---------------------
+QGIS 可以讀 dxf 檔，就直接讀入。
+可以再另存成 shp 檔編修上比較不受限制。
+
+自動數化的只能遠看，
+近看會發現有不少斷掉的地方，
+或是很多雜訊一起被判斷成等高線。
+
+我們決定不把等高線弄完整，
+反正要的是 DTM ，不是 *完整的等高線* ；
+之後產生 DTM 不一定要是完整的線，
+用一段段的線也可以。
+
+但還是需要高程，
+所以需要手動為每段線段標上高程。
+這部份應該大家都會，
+就先在屬性表格新增一個高程欄位，
+把要改的線段用選取工具選起來，
+再用 *update select feature* 改線段高程就好了。
+
+有些線會斷掉，要不要接就看誠意了。
+反正等高線本來就不準，內插也不準，
+一條線那麼長，也不缺那一小段斷掉的。
+多的線就不要標她的高程，
+最後再一次把所有沒高程的線刪掉就好了。
+
+
+內插出 DTM
+----------
+標好高程後就可以開始內插，
+這部份我是看 [教學文][qgis-interpolate] 學的。
+其中要注意的是要加入圖層後要選
+**break line** 而不是 **point** ，
+就能用線段內插。
+我有想試過 IDW ，但我的電腦跑 IDW 超慢，就放棄了。
+
+如果有 **合併** 過線段，要拆開不然會不能內插。
+所謂合併是用 **merge** 合併，
+會讓數條線段共享一個屬性，
+但還是不是 **同一條線段** 。
+要變成同一條只能用 **edit vertex** ，
+一個個加新點，不能用合併的。
+
+[qgis-interpolate]: http://www.qgistutorials.com/zh_TW/docs/interpolating_point_data.html
+
+
+幾何校正
+--------
+最後才校正的原因是校正後圖會糊掉，
+箤取等高線比較困難。
+
+> 後來發現圖會糊掉的原因是使用
+> thin plate spline 改正，
+> 這個改正法出來的圖的解析度
+> 和控制點的數目正相關。
+> 不是很適合用在地圖的改正。
+
+
+### 校正帶等高線的彩圖
+
+首先出圖，出一張連等高線一起的圖，
+有等高線作特徵比較好校正。
+
+<a data-flickr-embed="true"  href="https://www.flickr.com/photos/135370742@N08/35136323340/in/dateposted-public/" title="dtm_lines_composer"><img src="https://c1.staticflickr.com/5/4289/35136323340_f586ac9527_z.jpg" width="640" height="360" alt="dtm_lines_composer"></a><script async src="//embedr.flickr.com/assets/client-code.js" charset="utf-8"></script>
+
+
+幾何改正這張圖到之前改正過的
+image00004_modify.tif ，
+用其中的等高線作共同點。
+在標記共同點時不直接輸入坐標，
+選擇 **from map canvas** 。
+
+<a data-flickr-embed="true"  href="https://www.flickr.com/photos/135370742@N08/35483625586/in/dateposted-public/" title="georeference-from-map-canvas"><img src="https://c1.staticflickr.com/5/4279/35483625586_5382e141f7_z.jpg" width="640" height="360" alt="georeference-from-map-canvas"></a><script async src="//embedr.flickr.com/assets/client-code.js" charset="utf-8"></script>
+
+
+在地圖中同一點點一下，即完成一組共同點。
+
+<a data-flickr-embed="true"  href="https://www.flickr.com/photos/135370742@N08/35522780925/in/dateposted-public/" title="georeference-same-map"><img src="https://c1.staticflickr.com/5/4254/35522780925_0cac4feb41_z.jpg" width="640" height="360" alt="georeference-same-map"></a><script async src="//embedr.flickr.com/assets/client-code.js" charset="utf-8"></script>
+
+
+完成足夠共同點後，設定好校正演算法，
+即可開始校正；校正成果如下圖。
+
+<a data-flickr-embed="true"  href="https://www.flickr.com/photos/135370742@N08/35483626656/in/dateposted-public/" title="georeference-color-contour"><img src="https://c1.staticflickr.com/5/4230/35483626656_377198b60f_z.jpg" width="640" height="359" alt="georeference-color-contour"></a><script async src="//embedr.flickr.com/assets/client-code.js" charset="utf-8"></script>
+
+
+### 校正 DTM 網格資料
+
+之後再用這張圖校正之前內插出的網格資料，
+一樣用 georeference ，但這次要用邊界做共同點。
+
+<a data-flickr-embed="true"  href="https://www.flickr.com/photos/135370742@N08/34681406654/in/album-72157659688229849/" title="georeference-dtm-canvas"><img src="https://c1.staticflickr.com/5/4257/34681406654_c50a9c865c_z.jpg" width="640" height="360" alt="georeference-dtm-canvas"></a><script async src="//embedr.flickr.com/assets/client-code.js" charset="utf-8"></script>
+
+<a data-flickr-embed="true"  href="https://www.flickr.com/photos/135370742@N08/34681408114/in/album-72157659688229849/" title="georeference-color-contour"><img src="https://c1.staticflickr.com/5/4286/34681408114_0721c5d89f_z.jpg" width="640" height="359" alt="georeference-color-contour"></a><script async src="//embedr.flickr.com/assets/client-code.js" charset="utf-8"></script>
+
+全部完成後以假色表現的的 dtm 。
+
+<a data-flickr-embed="true"  href="https://www.flickr.com/photos/135370742@N08/35355486632/in/album-72157659688229849/" title="dtm_with_map"><img src="https://c1.staticflickr.com/5/4290/35355486632_09a953c41c_z.jpg" width="640" height="453" alt="dtm_with_map"></a><script async src="//embedr.flickr.com/assets/client-code.js" charset="utf-8"></script>
+
+
+</pre>
+
+<script src="ext/meeta.js" defer></script>
+
+</body>
+</html>
+

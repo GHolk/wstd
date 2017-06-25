@@ -1,0 +1,142 @@
+<!DOCTYPE HTML>
+<html lang="zh-TW" prefix="og: http://ogp.me/ns#">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="UTF-8">
+<meta name="author" property="og:article:author" content="c34031328">
+<meta name="copyright" content="Common Creative">
+<meta name="generator" content="vim, markdown">
+<!-- 以上一般不用改，以下才要改。 -->
+
+<!-- 後設資料 -->
+<meta name="date" property="og:article:public_time" content="2017-03-28">
+<meta name="keywords" property="og:article:tag" content="gis,qgis,map,georeference,nad">
+
+<!-- 和網頁位置有關 -->
+<link rel="stylesheet" type="text/css" href="ext/word.css">
+
+<title> 幾何改正掃描的地圖 </title>
+</head>
+<body>
+<main>
+<h1>幾何改正地圖並數化其中等高線為 DTM</h1>
+<p>使用 QGIS 為掃描的地圖做幾何改正。
+DTM 的製做參見 <a href="gimp-autotrace-contour.html">由地圖等高線產生 DTM</a> 。</p>
+<h2>QGIS 坐標系統設定</h2>
+<p>由地圖下方標註文字得知，
+地圖使用的平面坐標系統是 NAD 23 ，
+所以將 QGIS 專案的坐標系統設為 NAD 23 。</p>
+<pre><code>工具列 &gt; Project &gt; Project Properties &gt; CRS &gt; NAD 23
+</code></pre><p>改正好的 tiff 也都是使用 NAD 23 坐標系統，
+開啟時注意不要選錯。</p>
+<h2>幾何改正</h2>
+<p>我們使用的共同點是為圖中方格網的交叉點，
+在地圖的邊緣可以看到格線坐標，
+若是沒有靠到邊緣的要靠相鄰的圖判斷。</p>
+<h2>檔案列表</h2>
+<ul>
+<li>image00001_modified.tif: 第一張改正過的掃描影像，
+共六張，坐標系統為 NAD 23 。</li>
+<li>contour_all.shp: 等高線的 shapefile ，
+各線段有 height 欄位記載高程資料 (feet) ，沒有坐標。</li>
+<li>tin500.asc: 內插出的 dtm ，沒有坐標。</li>
+<li>dtm.tif: 用 tin500.asc 幾何改正的結果，坐標系統為 NAD 23 。</li>
+<li>gimp-autotrace-contour.pdf: 使用 GIMP 與 AutoTrace 數化等高線的過程。</li>
+<li>index.pdf: 本文件。</li>
+</ul>
+<h2>分工表</h2>
+<p>我都做得出來，只是數化之類的一個人全包會累，
+所以我會教大家做，再一起整合。
+如果有人問我，我也會教我自己的部驟。</p>
+<h3>幾何校正 image00001 - image00006</h3>
+<p>黃紹維、羅漢東、黃楷元一人兩張，共六張。</p>
+<p>魏姬勇去打工不在，我在教大家做，
+順便箤取等高線成 shape 檔。</p>
+<h3>從地圖 tif 檔到等高線 shape 檔</h3>
+<p>王鼎鈞，我自己摸出來的。</p>
+<h3>為 shape 檔等高線標上高程</h3>
+<p>每人負責二個方格，黃紹維一個，
+因為他那天不在，後來魏姬勇再教他的。</p>
+<p>我大概教了怎麼做，但每個人數化有自己的習慣與技巧，
+像羅漢東會把線合併再一次改，
+黃楷元是重新數化一條新的線。
+（雖然他後來 qgis 當掉，又重做了一次。）</p>
+<h3>用內插法從有高程的等高線產生 raster 並幾何校正</h3>
+<p>我一邊學一邊教黃楷元，後來他比我先做完，
+我就懶得做了，直接用他的。</p>
+
+</main>
+<pre class="raw markdown">
+
+幾何改正地圖並數化其中等高線為 DTM
+==================================
+使用 QGIS 為掃描的地圖做幾何改正。
+DTM 的製做參見 [由地圖等高線產生 DTM](gimp-autotrace-contour.html) 。
+
+QGIS 坐標系統設定
+-----------------
+由地圖下方標註文字得知，
+地圖使用的平面坐標系統是 NAD 23 ，
+所以將 QGIS 專案的坐標系統設為 NAD 23 。
+
+    工具列 > Project > Project Properties > CRS > NAD 23
+
+
+改正好的 tiff 也都是使用 NAD 23 坐標系統，
+開啟時注意不要選錯。
+
+
+幾何改正
+--------
+我們使用的共同點是為圖中方格網的交叉點，
+在地圖的邊緣可以看到格線坐標，
+若是沒有靠到邊緣的要靠相鄰的圖判斷。
+
+
+檔案列表
+--------
+
+  - image00001_modified.tif: 第一張改正過的掃描影像，
+    共六張，坐標系統為 NAD 23 。
+  - contour_all.shp: 等高線的 shapefile ，
+    各線段有 height 欄位記載高程資料 (feet) ，沒有坐標。
+  - tin500.asc: 內插出的 dtm ，沒有坐標。
+  - dtm.tif: 用 tin500.asc 幾何改正的結果，坐標系統為 NAD 23 。
+  - gimp-autotrace-contour.pdf: 使用 GIMP 與 AutoTrace 數化等高線的過程。
+  - index.pdf: 本文件。
+
+
+分工表
+------
+我都做得出來，只是數化之類的一個人全包會累，
+所以我會教大家做，再一起整合。
+如果有人問我，我也會教我自己的部驟。
+
+### 幾何校正 image00001 - image00006
+黃紹維、羅漢東、黃楷元一人兩張，共六張。
+
+魏姬勇去打工不在，我在教大家做，
+順便箤取等高線成 shape 檔。
+
+### 從地圖 tif 檔到等高線 shape 檔
+王鼎鈞，我自己摸出來的。
+
+### 為 shape 檔等高線標上高程
+每人負責二個方格，黃紹維一個，
+因為他那天不在，後來魏姬勇再教他的。
+
+我大概教了怎麼做，但每個人數化有自己的習慣與技巧，
+像羅漢東會把線合併再一次改，
+黃楷元是重新數化一條新的線。
+（雖然他後來 qgis 當掉，又重做了一次。）
+
+### 用內插法從有高程的等高線產生 raster 並幾何校正
+我一邊學一邊教黃楷元，後來他比我先做完，
+我就懶得做了，直接用他的。
+
+</pre>
+<script src="ext/meeta.js" defer></script>
+
+</body>
+</html>
+
