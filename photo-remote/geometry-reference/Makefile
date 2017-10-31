@@ -15,7 +15,7 @@ README.pdf: index.html
 	chromium $<
 	# click Enter after chromium print pdf
 	read w
-	sed -i 's/file:[^ ()]*\/hw1/./g' $@
+	sed -i 's#file://$(PWD)#.#g' $@
 	ghostscript -sDEVICE=pdfwrite -dPDFSETTINGS=/printer -dNOPAUSE -dQUIET -dBATCH -sOutputFile=- $@ | sponge $@
 
 index.html: $(source_html)

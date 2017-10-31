@@ -11,6 +11,7 @@
 <!-- 後設資料 -->
 <meta name="date" property="og:article:public_time" content="2017-10-24T14:31:57.977Z">
 <meta name="keywords" property="og:article:tag" content="程式,ncku,測量,作業">
+<meta name="canonical" content="http://gholk.github.io/georeference-tilt-photo.html">
 
 <!-- 和網頁位置有關 -->
 <link rel="icon" type="image/png" href="http://gholk.github.io/ext/icon.png">
@@ -19,14 +20,19 @@
 
 <script src="http://gholk.github.io/ext/meta-bloging.js"></script>
 
-<title> 影像改正</title>
+<title>影像改正</title>
+
+<style>
+script, style {
+    display: none;
+}
+iframe {
+    overflow: visible;
+}
+</style>
+
 </head>
 <body>
-  <style>
-    script, style {
-      display: none;
-    }
-  </style>
 <main><h1 id="影像改正">影像改正</h1>
 <p>將影像用幾何方式改正。</p>
 <p>這次程式包括</p>
@@ -42,9 +48,10 @@ project-transform.js</li>
 </ul>
 <p>引用的函式庫包括 Jimp 提供影像處理，
 與 mathjs 提供矩陣運算功能。</p>
-<script src="http://gholk.github.io/ext/toc.js"></script>
+<link rel="canonical" href="http://gholk.github.io/georeference-tilt-photo.html">
 
-<script> const pathPrefix = '.' </script>
+<script src="http://gholk.github.io/ext/toc.js"></script>
+<script src="http://gholk.github.io/ext/flickr.js"></script>
 
 <h3 id="程式">程式</h3>
 <h3 id="transform.js">transform.js</h3>
@@ -94,24 +101,28 @@ project-transform.js</li>
 要使用的轉換 library 即會完成轉換。
 上面那四個腳本就是呼叫 convert.js 轉換的。</p>
 <script>
-const head34 = document.querySelectorAll('h3, h4')
-Array.from(head34).forEach((head) => {
-    const text = head.textContent
-    if (text.match(/^[\w-]+\.js$/)) {
-        head.firstChild.remove()
-        const a = document.createElement('a')
-        a.href = pathPrefix + '/' + text
-        a.textContent = text
-        head.appendChild(a)
-    }
-})
+const heads = document.querySelectorAll('h2, h3, h4')
+Array.from(heads)
+    .filter((head) => /^[\w-]+\.js$/.test(head.textContent))
+    .forEach((head) => {
+        const filename = head.textContent
+        head.textContent = ''
+        head.appendChild(findGithubFile(filename))
+    })
+
+function findGithubFile(filename) {
+    const repo = '.'
+    const a = document.createElement('a')
+    a.href = `${repo}/${filename}`
+    a.textContent = filename
+    return a
+}
 </script>
 
 <h2 id="轉換成果">轉換成果</h2>
 <style>
 img {
-    max-width: 45%;
-    margin: 2px;
+    max-width: 100%;
 }
 :this + p,
 :this + p + p,
@@ -140,14 +151,31 @@ img {
 <img src="DJI_0341-polynomial-d1.png" alt="photo">
 <img src="DJI_0341-polynomial-transform.png" alt="photo">
 <img src="DJI_0341-project-transform.png" alt="photo"></p>
+
+<style>
+  figure {
+    display: inline-block;
+    width: 40%;
+    margin: 1em;
+  }
+  figure > img {
+    display: block;
+  }
+  figcaption {
+    display: block;
+    text-align: center;
+  }
+</style>
+
 <script>
-const photoHeadId = prevQuerySelector('h2').id
-const photos = document.querySelectorAll('#' + photoHeadId + ' ~ * img')
-Array.from(photos).forEach((photo) => {
-    const filename = photo.src.match(/[^\/]+$/)[0]
-    photo.src = pathPrefix + '/' + filename
-    photo.title = filename.replace('.png', '').replace(/-/g, ' ')
-})
+  Array.from(document.querySelectorAll('img')).forEach((img) => {
+    const fig = document.createElement('figure')
+    img.replaceWith(fig)
+    fig.appendChild(img)
+    const cap = document.createElement('figcation')
+    cap.textContent = img.src.replace(/^.*\//, '')
+    fig.appendChild(cap)
+  })
 </script>
 
 <p>有點問題是我轉換的成果都會有偏移，
@@ -182,13 +210,8 @@ chromium 印出來就 165MB，圖檔再加一加就超過了。
 畫質不用太好；要好直接看原始檔就好了。</p>
 </main>
 
-<footer>
-<script src="http://gholk.github.io/ext/luser-meta.js" defer></script>
-<dl><dt>url</dt>
-  <dd><a href="http://gholk.github.io/georeference-tilt-photo.html">
-      http://gholk.github.io/georeference-tilt-photo.html</a></dd>
-</dl>
-</footer>
+
+<script src="http://gholk.github.io/ext/meta-meta.js" defer></script>
 
 </body>
 </html>
