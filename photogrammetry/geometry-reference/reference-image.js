@@ -7,6 +7,7 @@ const Z = 2
 class ReferenceImage {
     constructor(path, realToPixel) {
         this.realToPixel = realToPixel
+        this.gsd = this.constructor.gsd
         return Jimp.read(path).then((image) => {
             this.image = image
             return this
@@ -19,7 +20,7 @@ class ReferenceImage {
         return this.image.getPixelColor(col, row)
     }
     walkImage(start, end, fill) {
-        const interval = this.constructor.gsd
+        const interval = this.gsd
         for (let x=start[X], col=0; x<end[X]; x+=interval, col++) {
             for (let y=start[Y], row=0; y<end[Y]; y+=interval, row++) {
                 fill(this.getColorByReal([x,y]), [col,row])
@@ -27,7 +28,7 @@ class ReferenceImage {
         }
     }
     reference(start, end) {
-        const interval = this.constructor.gsd
+        const interval = this.gsd
         const width = Math.ceil((end[X] - start[X]) / interval)
         const height = Math.ceil((end[Y] - start[Y]) / interval)
         return new Promise((returnImage) => {
