@@ -1,9 +1,4 @@
-
-const ColinearityEquation = require('colinearityEquation')
-
-const X = 0
-const Y = 1
-const Z = 2
+const file = 'DJI_0339.jpg'
 
 const eop = {
     // xo: 169570.443932,
@@ -27,31 +22,10 @@ iop.k = [
 ]
 iop.p = [0.00002392585197592054, 0.00001764654855396589]
 
-const ce = new ColinearityEquation(eop, iop)
+const start = [450, 70]
+const end = [700, 270]
+const range = [start, end]
+const gsd = 0.1
 
-function lengthToPixel(point) {
-    const scale = 631.8955603017934
-    const scalePoint = point.map((length) => length * scale)
-    scalePoint[X] = 1995.5 - scalePoint[X]
-    scalePoint[Y] = 1495.5 + scalePoint[Y]
-    return scalePoint
-}
-
-
-const ReferenceImage = require('./reference-image').ReferenceImage
-
-function realToPixel(real) {
-    const meanOrthoHeight = 19.7
-    if (isNaN(real[Z])) real[Z] = meanOrthoHeight
-    return lengthToPixel(ce.groundToPhoto(real))
-}
-
-const rip = new ReferenceImage('./DJI_0339.jpg', realToPixel)
-rip.then((ri) => {
-    const start = [450, 70]
-    const end = [700, 270]
-    ri.gsd = 0.1
-    return ri.reference(start, end)
-}).then((ni) => {
-    ni.write('DJI_0339-ortho.png')
-})
+const ortho = require('./ortho.js')
+ortho.run(file, eop, iop, range, gsd)
